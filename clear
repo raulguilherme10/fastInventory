@@ -1,0 +1,1094 @@
+[1mdiff --git a/application/controllers/Localizacao.php b/application/controllers/Localizacao.php[m
+[1mindex 8ecf333..010f151 100755[m
+[1m--- a/application/controllers/Localizacao.php[m
+[1m+++ b/application/controllers/Localizacao.php[m
+[36m@@ -23,19 +23,16 @@[m [mclass Localizacao extends CI_Controller {[m
+ 			$dados = elements(array('loc_nome', 'loc_pavimento', 'loc_status'), $this->input->post());[m
+ 			$this->loc->create($dados);[m
+ 			$this->session->set_flashdata('ok', 'Cadastro efetuado com sucesso!');[m
+[32m+[m
+[32m+[m			[32mredirect(base_url('localizacao/cadastrarLocalizacao', 'refresh'));[m
+ 			[m
+ 		}[m
+ 		[m
+[31m-		//$this->template->set_partial('lateral', 'partials/lateral-localizacao')->set_layout('default')->build('localizacao/listarLocalizacao_view');[m
+[31m-		redirect('localizacao/listarLocalizacao');[m
+[32m+[m		[32m$this->template->set_partial('lateral', 'partials/lateral-localizacao')->set_layout('default')->build('localizacao/formCadLocalizacao');[m
+ 	}[m
+ [m
+ 	public function listarLocalizacao(){[m
+ [m
+[31m-		//linhas principais para paginacao[m
+[31m-		//$paginas = $this->pag->paginacao(1, 'teste');[m
+[31m-[m
+[31m-[m
+ 		$dados['query'] = $this->db->get('tbl_local');[m
+ [m
+ 		$this->load->view('localizacao/listarLocalizacao_view', $dados);[m
+[36m@@ -78,41 +75,6 @@[m [mclass Localizacao extends CI_Controller {[m
+ [m
+ 	}[m
+ 	[m
+[31m-	public function pesquisarLocalizacao(){[m
+[31m-[m
+[31m-		//recebendo os dados do form[m
+[31m-		$nome = $this->input->post('nome');[m
+[31m-		$tipo = $this->input->post('tipo');[m
+[31m-		$paginas = NULL;[m
+[31m-		[m
+[31m-[m
+[31m-		//linhas principais para paginacao[m
+[31m-		if($tipo == 'Nome'){[m
+[31m-			$paginas = $this->pag->paginacao(2, $nome);[m
+[31m-		}else{[m
+[31m-			if($tipo == 'Pavimento'){[m
+[31m-				$paginas = $this->pag->paginacao(3, $nome);[m
+[31m-			}else{[m
+[31m-				if($tipo == "Status"){[m
+[31m-					$paginas = $this->pag->paginacao(4, $nome);[m
+[31m-				}[m
+[31m-			}[m
+[31m-		}[m
+[31m-[m
+[31m-		[m
+[31m-		//($this->uri->segment(3) != '')? $inicio = $this->uri->segment(3) : $inicio = 0;[m
+[31m-[m
+[31m-		[m
+[31m-[m
+[31m-		//chamando a funcao de pesquisar na model de localizacao[m
+[31m-		$dados['query'] = $this->loc->pesquisar($nome, $tipo, $paginas, $this->uri->segment(3));[m
+[31m-[m
+[31m-		//carregando a view e pacando o resultado[m
+[31m-		$this->load->view('localizacao/listarLocalizacao_view', $dados);[m
+[31m-		$this->template->set_partial('lateral', 'partials/lateral-localizacao')->set_layout('default')->build('localizacao/listarLocalizacao_view') ;[m
+[31m-[m
+[31m-		[m
+[31m-	}[m
+ [m
+ 	public function gerarQRCode($id){[m
+ 		$query = $this->code->gerarQrCode($id, 'local');[m
+[1mdiff --git a/application/controllers/Paginacao.php b/application/controllers/Paginacao.php[m
+[1mdeleted file mode 100755[m
+[1mindex c219947..0000000[m
+[1m--- a/application/controllers/Paginacao.php[m
+[1m+++ /dev/null[m
+[36m@@ -1,37 +0,0 @@[m
+[31m-<?php[m
+[31m-defined('BASEPATH') OR exit('No direct script access allowed');[m
+[31m-[m
+[31m-class Paginacao extends CI_Controller {[m
+[31m-[m
+[31m-	public function __construct(){[m
+[31m-		parent::__construct();[m
+[31m-	}[m
+[31m-[m
+[31m-	public function paginacao(){[m
+[31m-		//inicio paginaçao[m
+[31m-		$config['base_url'] = base_url('localizacao/listarLocalizacao');[m
+[31m-		$config['total_rows'] = $this->db->get('tbl_local')->num_rows();[m
+[31m-		$config['per_page'] = 10;[m
+[31m-		$config['num_links'] = 5;[m
+[31m-[m
+[31m-[m
+[31m-		$config['full_tag_open'] = '<div class="pagination-small pagination-centered"><ul class="pagination ">';[m
+[31m-    	$config['full_tag_close'] = '</ul></div>';[m
+[31m-    	$config['page_query_string'] = FALSE;[m
+[31m-	    $config['prev_link'] = '&lt; Anterior';[m
+[31m-	    $config['prev_tag_open'] = '<li>';[m
+[31m-	    $config['prev_tag_close'] = '</li>';[m
+[31m-	    $config['next_link'] = 'Próximo &gt;';[m
+[31m-	    $config['next_tag_open'] = '<li>';[m
+[31m-	    $config['next_tag_close'] = '</li>';[m
+[31m-	    $config['cur_tag_open'] = '<li class="active"><a href="#">';[m
+[31m-	    $config['cur_tag_close'] = '</a></li>';[m
+[31m-	    $config['num_tag_open'] = '<li>';[m
+[31m-	    $config['num_tag_close'] = '</li>';[m
+[31m-	    $config['first_link'] = FALSE;[m
+[31m-	    $config['last_link'] = FALSE;[m
+[31m-[m
+[31m-[m
+[31m-		//iniciando a paginacao[m
+[31m-		$this->pagination->initialize($config);[m
+[31m-	}[m
+\ No newline at end of file[m
+[1mdiff --git a/application/controllers/Teste.php b/application/controllers/Teste.php[m
+[1mdeleted file mode 100755[m
+[1mindex 3efbf11..0000000[m
+[1m--- a/application/controllers/Teste.php[m
+[1m+++ /dev/null[m
+[36m@@ -1,24 +0,0 @@[m
+[31m-<?php[m
+[31m-defined('BASEPATH') OR exit('No direct script access allowed');[m
+[31m-[m
+[31m-class Teste extends CI_Controller {[m
+[31m-[m
+[31m-	public function index()[m
+[31m-	{[m
+[31m-		$this->load->view('teste');[m
+[31m-	}[m
+[31m-[m
+[31m-	public function ex3(){[m
+[31m-		$dados = array('titulo' => 'Essse titulo foi passado via controller',[m
+[31m-						'texto' => 'texto enviado pelo controlador', [m
+[31m-						'menu' => array(0 => '<a href="#">Home</a>', [m
+[31m-										1 => '<a href="#">Sobre Nos</a>',[m
+[31m-										2 => '<a href="#">Contato</a>',),);[m
+[31m-[m
+[31m-		$this->load->view('exemplo3', $dados);[m
+[31m-	}[m
+[31m-[m
+[31m-}[m
+[31m-[m
+[31m-/* End of file teste.php */[m
+[31m-/* Location: ./application/controllers/teste.php */[m
+\ No newline at end of file[m
+[1mdiff --git a/application/controllers/Welcome.php b/application/controllers/Welcome.php[m
+[1mdeleted file mode 100755[m
+[1mindex b4b8867..0000000[m
+[1m--- a/application/controllers/Welcome.php[m
+[1m+++ /dev/null[m
+[36m@@ -1,25 +0,0 @@[m
+[31m-<?php[m
+[31m-defined('BASEPATH') OR exit('No direct script access allowed');[m
+[31m-[m
+[31m-class Welcome extends CI_Controller {[m
+[31m-[m
+[31m-	/**[m
+[31m-	 * Index Page for this controller.[m
+[31m-	 *[m
+[31m-	 * Maps to the following URL[m
+[31m-	 * 		http://example.com/index.php/welcome[m
+[31m-	 *	- or -[m
+[31m-	 * 		http://example.com/index.php/welcome/index[m
+[31m-	 *	- or -[m
+[31m-	 * Since this controller is set as the default controller in[m
+[31m-	 * config/routes.php, it's displayed at http://example.com/[m
+[31m-	 *[m
+[31m-	 * So any other public methods not prefixed with an underscore will[m
+[31m-	 * map to /index.php/welcome/<method_name>[m
+[31m-	 * @see http://codeigniter.com/user_guide/general/urls.html[m
+[31m-	 */[m
+[31m-	public function index()[m
+[31m-	{[m
+[31m-		$this->load->view('default');[m
+[31m-	}[m
+[31m-}[m
+[1mdiff --git a/application/models/Localizacao_model.php b/application/models/Localizacao_model.php[m
+[1mindex d32d499..e367e10 100755[m
+[1m--- a/application/models/Localizacao_model.php[m
+[1m+++ b/application/models/Localizacao_model.php[m
+[36m@@ -17,7 +17,6 @@[m [mdefined('BASEPATH') OR exit('No direct script access allowed');[m
+ 			//$this->db->limit($seg, $paginas);[m
+ 			$this->db->select('*');[m
+         	$this->db->from('tbl_local');[m
+[31m-        	$this->db->limit($paginas, $seg);[m
+         	$this->db->like('loc_nome', $nome, 'after');[m
+         	$query = $this->db->get();[m
+ [m
+[1mdiff --git a/application/views/ativo.php b/application/views/ativo.php[m
+[1mdeleted file mode 100755[m
+[1mindex a2d0998..0000000[m
+[1m--- a/application/views/ativo.php[m
+[1m+++ /dev/null[m
+[36m@@ -1,118 +0,0 @@[m
+[31m-<html lang="pt-BR">[m
+[31m-    [m
+[31m-    <head>[m
+[31m-        <meta charset="utf-8">[m
+[31m-        <meta name="viewport" content="width=device-width, initial-scale=1">[m
+[31m-        <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>[m
+[31m-        <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>[m
+[31m-        <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"[m
+[31m-        rel="stylesheet" type="text/css">[m
+[31m-        <link rel="stylesheet" href="css/theme.css">[m
+[31m-[m
+[31m-        <link rel="stylesheet" href="css/bootstrap.css">[m
+[31m-        <link rel="stylesheet" href="css/bootstrap-theme.css">[m
+[31m-        <link rel="stylesheet" href="css/style.css">[m
+[31m-[m
+[31m-        <link rel="shortcut icon" href="favicon.ico" >[m
+[31m-[m
+[31m-        <title>Fast Inventory</title>[m
+[31m-    </head>[m
+[31m-    [m
+[31m-    <body>[m
+[31m-        <?php [m
+[31m-            include_once "includes/topo-ativo.php";[m
+[31m-        ?>[m
+[31m-[m
+[31m-        <?php [m
+[31m-            include_once "includes/mglh-ativo.php";[m
+[31m-        ?>[m
+[31m-        [m
+[31m-        <!-- Inicio Menu Lateral-->[m
+[31m-        <div class="section">[m
+[31m-            <div class="container">[m
+[31m-                <div class="row">[m
+[31m-                    <?php[m
+[31m-                        include_once "includes/lateral-ativo.php";[m
+[31m-                    ?>[m
+[31m-                    <div class="col-md-1">[m
+[31m-                        <br />[m
+[31m-                    </div>[m
+[31m-                    <div class="col-md-7 text-left">[m
+[31m-                        <form role="form">[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="cnpj">CNPJ do Fornecedor</label>[m
+[31m-                                <input class="form-control" id="cnpj"[m
+[31m-                                placeholder="CNPJ do Fornecedor" type="password">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="nomeFantasia">Nome Fantasia</label>[m
+[31m-                                <input class="form-control" id="nomeFantasia"[m
+[31m-                                placeholder="Nome Fantasia" type="text">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group ">[m
+[31m-                                <label class="control-label" for="logadouro">Logadouro</label>[m
+[31m-                                <input class="form-control" id="logadouro"[m
+[31m-                                placeholder="Logadouro" type="password">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="numero">Número</label>[m
+[31m-                                <input class="form-control" id="numero"[m
+[31m-                                placeholder="Confirmação de Senha" type="password">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="complemento">Complemento</label>[m
+[31m-                                <input class="form-control" id="complemento"[m
+[31m-                                placeholder="Complemento" type="password">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="cidade">Cidade</label>[m
+[31m-                                <input class="form-control" id="cidade"[m
+[31m-                                placeholder="Cidade" type="password">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="estado">Estado</label>[m
+[31m-                                <input class="form-control" id="estado"[m
+[31m-                                placeholder="Estado" type="password">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="cep">CEP</label>[m
+[31m-                                <input class="form-control" id="cep"[m
+[31m-                                placeholder="CEP" type="password">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="fone">Fone</label>[m
+[31m-                                <input class="form-control" id="fone"[m
+[31m-                                placeholder="Fone" type="password">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="numeroPatrimonio">Número de Patrimônio</label>[m
+[31m-                                <input class="form-control" id="numeroPatrimonio"[m
+[31m-                                placeholder="Número de Patrimônio" type="password">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="descricao">Descrição</label>[m
+[31m-                                <input class="form-control" id="descricao"[m
+[31m-                                placeholder="Descrição" type="password">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="valorUnitario">Valor Unitário</label>[m
+[31m-                                <input class="form-control" id="valorUnitario"[m
+[31m-                                placeholder="Valor Unitário" type="password">[m
+[31m-                            </div>[m
+[31m-                            <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"></i> Salvar</button>[m
+[31m-                            <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-download-alt"></i> Gerar QR Code</button>[m
+[31m-                        </form>[m
+[31m-                    </div>[m
+[31m-                </div>[m
+[31m-            </div>[m
+[31m-        </div>[m
+[31m-        <!-- Fim Menu Lateral -->[m
+[31m-[m
+[31m-        <!-- Inicio rodape-->[m
+[31m-        <?php[m
+[31m-            include_once "includes/footer.php";[m
+[31m-        ?>[m
+[31m-        <!-- fim rodape -->[m
+[31m-    </body>[m
+[31m-[m
+[31m-</html>[m
+\ No newline at end of file[m
+[1mdiff --git a/application/views/conteudo2.php b/application/views/conteudo2.php[m
+[1mdeleted file mode 100755[m
+[1mindex d80f0ae..0000000[m
+[1m--- a/application/views/conteudo2.php[m
+[1m+++ /dev/null[m
+[36m@@ -1,18 +0,0 @@[m
+[31m- <form role="form">[m
+[31m-    <div class="form-group">[m
+[31m-        <label class="control-label" for="senhaAtual">Filho da Puta</label>[m
+[31m-        <input class="form-control" id="senhaAtual"[m
+[31m-        placeholder="Senha Atual" type="text">[m
+[31m-    </div>[m
+[31m-    <div class="form-group ">[m
+[31m-        <label class="control-label" for="novaSenha">Nova Senha</label>[m
+[31m-        <input class="form-control" id="novaSenha"[m
+[31m-        placeholder="Nova Senha" type="password">[m
+[31m-    </div>[m
+[31m-    <div class="form-group">[m
+[31m-        <label class="control-label" for="novamenteSenha">Confirme a Senha Novamente</label>[m
+[31m-        <input class="form-control" id="novamenteSenha"[m
+[31m-        placeholder="Confirmação de Senha" type="password">[m
+[31m-    </div>[m
+[31m-    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"></i> Salvar</button>[m
+[31m-</form>[m
+\ No newline at end of file[m
+[1mdiff --git a/application/views/favicon.ico b/application/views/favicon.ico[m
+[1mdeleted file mode 100755[m
+[1mindex c1d4291..0000000[m
+Binary files a/application/views/favicon.ico and /dev/null differ
+[1mdiff --git a/application/views/index.html b/application/views/index.html[m
+[1mdeleted file mode 100755[m
+[1mindex 8f22f5c..0000000[m
+[1m--- a/application/views/index.html[m
+[1m+++ /dev/null[m
+[36m@@ -1,127 +0,0 @@[m
+[31m-<!DOCTYPE html>[m
+[31m-<html lang="pt-BR">[m
+[31m-    [m
+[31m-    <head>[m
+[31m-        <meta charset="utf-8">[m
+[31m-        <meta name="viewport" content="width=device-width, initial-scale=1">[m
+[31m-        <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>[m
+[31m-        <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>[m
+[31m-        <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"[m
+[31m-        rel="stylesheet" type="text/css">[m
+[31m-        <link rel="stylesheet" href="css/theme.css">[m
+[31m-[m
+[31m-        <link rel="stylesheet" href="css/bootstrap.css">[m
+[31m-        <link rel="stylesheet" href="css/bootstrap-theme.css">[m
+[31m-        <link rel="stylesheet" href="css/style.css">[m
+[31m-[m
+[31m-        <link rel="shortcut icon" href="favicon.ico" >[m
+[31m-[m
+[31m-        <title>Fast Inventory</title>[m
+[31m-    </head>[m
+[31m-    [m
+[31m-    <body>[m
+[31m-[m
+[31m-        <!-- Inicio Menu principal-->[m
+[31m-        <?php[m
+[31m-            include_once "includes/topo-home.php";[m
+[31m-        ?>[m
+[31m-        <!-- Fim Menu principal-->[m
+[31m-        [m
+[31m-        <!-- Inicio migalhas-->[m
+[31m-        <div class="section">[m
+[31m-            <div class="container">[m
+[31m-                <div class="row">[m
+[31m-                    <div class="col-md-12">[m
+[31m-                        <ul class="breadcrumb">[m
+[31m-                            <li>[m
+[31m-                                <a href="#">Home</a>[m
+[31m-                            </li>[m
+[31m-                            <li>[m
+[31m-                                <a href="#">Library</a>[m
+[31m-                            </li>[m
+[31m-                            <li class="active">Data</li>[m
+[31m-                        </ul>[m
+[31m-                    </div>[m
+[31m-                </div>[m
+[31m-            </div>[m
+[31m-        </div>[m
+[31m-        <!-- Fim migalhas-->[m
+[31m-        [m
+[31m-        <!-- Inicio Menu Lateral-->[m
+[31m-        <div class="section">[m
+[31m-            <div class="container">[m
+[31m-                <div class="row">[m
+[31m-                    <div class="col-md-4">[m
+[31m-                        <ul class="nav nav-pills nav-stacked">[m
+[31m-                            <li class="active">[m
+[31m-                                <a href="#">Trocar Senha</a>[m
+[31m-                            </li>[m
+[31m-                            <li>[m
+[31m-                                <a href="#">Profile</a>[m
+[31m-                            </li>[m
+[31m-                        </ul>[m
+[31m-                    </div>[m
+[31m-                    <div class="col-md-1">[m
+[31m-                        <br />[m
+[31m-                    </div>[m
+[31m-                    <div class="col-md-7 text-left">[m
+[31m-                        <form role="form">[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="senhaAtual">Senha Atual</label>[m
+[31m-                                <input class="form-control" id="senhaAtual"[m
+[31m-                                placeholder="Senha Atual" type="text">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group ">[m
+[31m-                                <label class="control-label" for="novaSenha">Nova Senha</label>[m
+[31m-                                <input class="form-control" id="novaSenha"[m
+[31m-                                placeholder="Nova Senha" type="password">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="novamenteSenha">Confirme a Senha Novamente</label>[m
+[31m-                                <input class="form-control" id="novamenteSenha"[m
+[31m-                                placeholder="Confirmação de Senha" type="password">[m
+[31m-                            </div>[m
+[31m-                            <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"></i> Salvar</button>[m
+[31m-                        </form>[m
+[31m-                    </div>[m
+[31m-                </div>[m
+[31m-            </div>[m
+[31m-        </div>[m
+[31m-        <!-- Fim Menu Lateral-->[m
+[31m-[m
+[31m-        <!-- Inicio rodapé-->[m
+[31m-        <footer class="section section-primary rodape">[m
+[31m-            <div class="container">[m
+[31m-                <div class="row">[m
+[31m-                    <div class="col-sm-6">[m
+[31m-                        <h1>Fast Inventory</h1>[m
+[31m-                        <p>Copyright © 2015 | Raul Guilherme Pereira[m
+[31m-                            <br>Telefone (11) 4022-3398[m
+[31m-                            <br>Celular (11) 99988-2345</p>[m
+[31m-                    </div>[m
+[31m-                    <div class="col-sm-6">[m
+[31m-                        <p class="text-info text-right">[m
+[31m-                            <br>[m
+[31m-                            <br>[m
+[31m-                        </p>[m
+[31m-                        <div class="row">[m
+[31m-                            <div class="col-md-12 hidden-lg hidden-md hidden-sm text-left">[m
+[31m-                                <a href="#"><i class="fa fa-3x fa-fw fa-twitter text-inverse"></i></a>[m
+[31m-                                <a href="#"><i class="fa fa-3x fa-fw fa-facebook text-inverse"></i></a>[m
+[31m-                            </div>[m
+[31m-                        </div>[m
+[31m-                        <div class="row">[m
+[31m-                            <div class="col-md-12 hidden-xs text-right">[m
+[31m-                                <a href="#"><i class="fa fa-3x fa-fw fa-twitter text-inverse"></i></a>[m
+[31m-                                <a href="#"><i class="fa fa-3x fa-fw fa-facebook text-inverse"></i></a>[m
+[31m-                            </div>[m
+[31m-                        </div>[m
+[31m-                    </div>[m
+[31m-                </div>[m
+[31m-            </div>[m
+[31m-        </footer>[m
+[31m-        <!-- Fim rodapé-->[m
+[31m-[m
+[31m-    </body>[m
+[31m-[m
+[31m-</html>[m
+\ No newline at end of file[m
+[1mdiff --git a/application/views/index.php b/application/views/index.php[m
+[1mdeleted file mode 100755[m
+[1mindex 4989142..0000000[m
+[1m--- a/application/views/index.php[m
+[1m+++ /dev/null[m
+[36m@@ -1,119 +0,0 @@[m
+[31m-<html lang="pt-BR">[m
+[31m-    [m
+[31m-    <head>[m
+[31m-        <meta charset="utf-8">[m
+[31m-        <meta name="viewport" content="width=device-width, initial-scale=1">[m
+[31m-        <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>[m
+[31m-        <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>[m
+[31m-        <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"[m
+[31m-        rel="stylesheet" type="text/css">[m
+[31m-[m
+[31m-        <link rel="stylesheet" href="<?php echo base_url('assets/css/theme.css'); ?> ">[m
+[31m-        <link rel="stylesheet" href="<?php echo base_url('assets/css/bootstrap.css'); ?> ">[m
+[31m-        <link rel="stylesheet" href="<?php echo base_url('assets/css/bootstrap-theme.css'); ?> ">[m
+[31m-        <link rel="stylesheet" href="<?php echo base_url('assets/css/style.css'); ?> ">[m
+[31m-[m
+[31m-        <link rel="shortcut icon" href="favicon.ico" >[m
+[31m-[m
+[31m-        <title>Fast Inventory</title>[m
+[31m-    </head>[m
+[31m-    [m
+[31m-    <body>[m
+[31m-[m
+[31m-        [m
+[31m-        <!-- Inicio Menu principal-->[m
+[31m-        <div class="navbar navbar-default navbar-inverse navbar-static-top">[m
+[31m-            <div class="container">[m
+[31m-                <div class="navbar-header">[m
+[31m-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse">[m
+[31m-                        <span class="sr-only">Toggle navigation</span>[m
+[31m-                        <span class="icon-bar"></span>[m
+[31m-                        <span class="icon-bar"></span>[m
+[31m-                        <span class="icon-bar"></span>[m
+[31m-                    </button>[m
+[31m-                    <a class="navbar-brand"><img height="20" alt="Brand" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAA81BMVEX///9VPnxWPXxWPXxWPXxWPXxWPXxWPXz///9hSYT6+vuFc6BXPn37+vz8+/z9/f2LeqWMe6aOfqiTg6uXiK5bQ4BZQX9iS4VdRYFdRYJfSINuWI5vWY9xXJF0YJR3Y5Z4ZZd5ZZd6Z5h9apq0qcW1qsW1q8a6sMqpnLyrn76tocCvpMGwpMJoUoprVYxeRoJjS4abjLGilLemmbrDutDFvdLPx9nX0eDa1OLb1uPd1+Td2OXe2eXh3Ofj3+nk4Orl4evp5u7u7PLv7fPx7/T08vb08/f19Pf29Pj39vn6+fuEcZ9YP35aQn/8/P1ZQH5fR4PINAOdAAAAB3RSTlMAIWWOw/P002ipnAAAAPhJREFUeF6NldWOhEAUBRvtRsfdfd3d3e3/v2ZPmGSWZNPDqScqqaSBSy4CGJbtSi2ubRkiwXRkBo6ZdJIApeEwoWMIS1JYwuZCW7hc6ApJkgrr+T/eW1V9uKXS5I5GXAjW2VAV9KFfSfgJpk+w4yXhwoqwl5AIGwp4RPgdK3XNHD2ETYiwe6nUa18f5jYSxle4vulw7/EtoCdzvqkPv3bn7M0eYbc7xFPXzqCrRCgH0Hsm/IjgTSb04W0i7EGjz+xw+wR6oZ1MnJ9TWrtToEx+4QfcZJ5X6tnhw+nhvqebdVhZUJX/oFcKvaTotUcvUnY188ue/n38AunzPPE8yg7bAAAAAElFTkSuQmCC"></a>[m
+[31m-                </div>[m
+[31m-                <div class="collapse navbar-collapse" id="navbar-ex-collapse">[m
+[31m-                    <ul class="nav navbar-nav navbar-right">[m
+[31m-                        <li class="active">[m
+[31m-                            <a href="index.php"><i class="glyphicon glyphicon-home"></i> Home</a>[m
+[31m-                        </li>[m
+[31m-                        <li>[m
+[31m-                            <a href="usuario.php"> <i class="glyphicon glyphicon-user"></i> Usuário</a>[m
+[31m-                        </li>[m
+[31m-                        <li>[m
+[31m-                            <a href="ativo.php"> <i class="glyphicon glyphicon-asterisk"></i> Ativo</a>[m
+[31m-                        </li>[m
+[31m-                        <li>[m
+[31m-                            <a href="localizacao.php"><i class="glyphicon glyphicon-remove-circle"></i> Localização</a>[m
+[31m-                        </li>[m
+[31m-                        <li>[m
+[31m-                            <a href="<?php echo base_url('Relatorio'); ?>"><i class="glyphicon glyphicon-file"></i> Relatório</a>[m
+[31m-                        </li>[m
+[31m-                        <li>[m
+[31m-                            <a href="<?php echo base_url('auth/logout'); ?>"><i class="glyphicon glyphicon-off"></i> Sair</a>[m
+[31m-                        </li>[m
+[31m-                    </ul>[m
+[31m-                </div>[m
+[31m-            </div>[m
+[31m-        </div>[m
+[31m-        <!-- Fim Menu principal-->[m
+[31m-        [m
+[31m-        [m
+[31m-        <!-- Inicio Menu Lateral-->[m
+[31m-        <div class="section">[m
+[31m-            <div class="container">[m
+[31m-                <div class="row">[m
+[31m-                    [m
+[31m-                    <div class="col-md-4">[m
+[31m-                        <!-- aqui vai ser o menu lateral-->[m
+[31m-                    </div>[m
+[31m-[m
+[31m-                    <div class="col-md-1">[m
+[31m-                        <br />[m
+[31m-                    </div>[m
+[31m-[m
+[31m-                    <div class="col-md-7 text-left">[m
+[31m-                       <!-- aqui vai ser o conteudo-->[m
+[31m-                    </div>[m
+[31m-                </div>[m
+[31m-            </div>[m
+[31m-        </div>[m
+[31m-        <!-- Fim Menu Lateral-->[m
+[31m-[m
+[31m-        <!-- Inicio rodapé-->[m
+[31m-        <footer class="section section-primary rodape">[m
+[31m-            <div class="container">[m
+[31m-                <div class="row">[m
+[31m-                    <div class="col-sm-6">[m
+[31m-                        <h1>Fast Inventory</h1>[m
+[31m-                        <p>Copyright © 2015 | Raul Guilherme Pereira[m
+[31m-                            <br>Telefone (11) 4022-3398[m
+[31m-                            <br>Celular (11) 99988-2345</p>[m
+[31m-                    </div>[m
+[31m-                    <div class="col-sm-6">[m
+[31m-                        <p class="text-info text-right">[m
+[31m-                            <br>[m
+[31m-                            <br>[m
+[31m-                        </p>[m
+[31m-                        <div class="row">[m
+[31m-                            <div class="col-md-12 hidden-lg hidden-md hidden-sm text-left">[m
+[31m-                                <a href="#"><i class="fa fa-3x fa-fw fa-twitter text-inverse"></i></a>[m
+[31m-                                <a href="#"><i class="fa fa-3x fa-fw fa-facebook text-inverse"></i></a>[m
+[31m-                            </div>[m
+[31m-                        </div>[m
+[31m-                        <div class="row">[m
+[31m-                            <div class="col-md-12 hidden-xs text-right">[m
+[31m-                                <a href="#"><i class="fa fa-3x fa-fw fa-twitter text-inverse"></i></a>[m
+[31m-                                <a href="#"><i class="fa fa-3x fa-fw fa-facebook text-inverse"></i></a>[m
+[31m-                            </div>[m
+[31m-                        </div>[m
+[31m-                    </div>[m
+[31m-                </div>[m
+[31m-            </div>[m
+[31m-        </footer>[m
+[31m-        <!-- Fim rodapé-->[m
+[31m-[m
+[31m-    </body>[m
+[31m-[m
+[31m-</html>[m
+\ No newline at end of file[m
+[1mdiff --git a/application/views/layouts/default.php b/application/views/layouts/default.php[m
+[1mindex 109f9df..f903b10 100755[m
+[1m--- a/application/views/layouts/default.php[m
+[1m+++ b/application/views/layouts/default.php[m
+[36m@@ -37,6 +37,7 @@[m
+                 }[m
+             } );[m
+         } );[m
+[32m+[m
+         </script>[m
+         [m
+ [m
+[36m@@ -69,7 +70,7 @@[m
+                             <a href="<?php echo base_url('ativo'); ?>"> <i class="glyphicon glyphicon-asterisk"></i> Ativo</a>[m
+                         </li>[m
+                         <li class="<?php if($this->uri->segment(1)=="localizacao"){echo "active";}?>">[m
+[31m-                            <a href="<?php echo base_url('localizacao/listarLocalizacao'); ?>"><i class="glyphicon glyphicon-remove-circle"></i> Localização</a>[m
+[32m+[m[32m                            <a href="<?php echo base_url('localizacao/cadastrarLocalizacao'); ?>"><i class="glyphicon glyphicon-remove-circle"></i> Localização</a>[m
+                         </li>[m
+                         <li class="<?php if($this->uri->segment(1)=="relatorio"){echo "active";}?>">[m
+                             <a href="<?php echo base_url('relatorio'); ?>"><i class="glyphicon glyphicon-file"></i> Relatório</a>[m
+[1mdiff --git a/application/views/layouts/lateral-home.php b/application/views/layouts/lateral-home.php[m
+[1mdeleted file mode 100755[m
+[1mindex dbf088d..0000000[m
+[1m--- a/application/views/layouts/lateral-home.php[m
+[1m+++ /dev/null[m
+[36m@@ -1,8 +0,0 @@[m
+[31m- <ul class="nav nav-pills nav-stacked">[m
+[31m-        <li class="<?php if($this->uri->segment(2)==""){echo "active";}?>">[m
+[31m-            <a href="#">Trocar Senha</a>[m
+[31m-        </li>[m
+[31m-        <li class="<?php if($this->uri->segment(2)=="teste"){echo "active";}?>">[m
+[31m-            <a href="#">Teste</a>[m
+[31m-        </li>[m
+[31m- </ul>[m
+[1mdiff --git a/application/views/localizacao.php b/application/views/localizacao.php[m
+[1mdeleted file mode 100755[m
+[1mindex 5d0e010..0000000[m
+[1m--- a/application/views/localizacao.php[m
+[1m+++ /dev/null[m
+[36m@@ -1,72 +0,0 @@[m
+[31m-<html lang="pt-BR">[m
+[31m-    [m
+[31m-    <head>[m
+[31m-        <meta charset="utf-8">[m
+[31m-        <meta name="viewport" content="width=device-width, initial-scale=1">[m
+[31m-        <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>[m
+[31m-        <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>[m
+[31m-        <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"[m
+[31m-        rel="stylesheet" type="text/css">[m
+[31m-        <link rel="stylesheet" href="css/theme.css">[m
+[31m-[m
+[31m-        <link rel="stylesheet" href="css/bootstrap.css">[m
+[31m-        <link rel="stylesheet" href="css/bootstrap-theme.css">[m
+[31m-        <link rel="stylesheet" href="css/style.css">[m
+[31m-[m
+[31m-        <link rel="shortcut icon" href="favicon.ico" >[m
+[31m-[m
+[31m-        <title>Fast Inventory</title>[m
+[31m-    </head>[m
+[31m-    [m
+[31m-    <body>[m
+[31m-        <?php [m
+[31m-            include_once "includes/topo-localizacao.php";[m
+[31m-        ?>[m
+[31m-[m
+[31m-        <?php [m
+[31m-            include_once "includes/mglh-localizacao.php";[m
+[31m-        ?>[m
+[31m-        [m
+[31m-        <!-- Inicio Menu Lateral-->[m
+[31m-        <div class="section">[m
+[31m-            <div class="container">[m
+[31m-                <div class="row">[m
+[31m-                    <?php[m
+[31m-                        include_once "includes/lateral-localizacao.php";[m
+[31m-                    ?>[m
+[31m-                    <div class="col-md-1">[m
+[31m-                        <br />[m
+[31m-                    </div>[m
+[31m-                    <div class="col-md-7 text-left">[m
+[31m-                        <form role="form">[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="senhaAtual">Senha Atual</label>[m
+[31m-                                <input class="form-control" id="senhaAtual"[m
+[31m-                                placeholder="Senha Atual" type="text">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group ">[m
+[31m-                                <label class="control-label" for="novaSenha">Nova Senha</label>[m
+[31m-                                <input class="form-control" id="novaSenha"[m
+[31m-                                placeholder="Nova Senha" type="password">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="novamenteSenha">Confirme a Senha Novamente</label>[m
+[31m-                                <input class="form-control" id="novamenteSenha"[m
+[31m-                                placeholder="Confirmação de Senha" type="password">[m
+[31m-                            </div>[m
+[31m-                            <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"></i> Salvar</button>[m
+[31m-                        </form>[m
+[31m-                    </div>[m
+[31m-                </div>[m
+[31m-            </div>[m
+[31m-        </div>[m
+[31m-        <!-- Fim Menu Lateral -->[m
+[31m-[m
+[31m-        <!-- Inicio rodape-->[m
+[31m-        <?php[m
+[31m-            include_once "includes/footer.php";[m
+[31m-        ?>[m
+[31m-        <!-- fim rodape -->[m
+[31m-    </body>[m
+[31m-[m
+[31m-</html>[m
+\ No newline at end of file[m
+[1mdiff --git a/application/views/localizacao/formCadLocalizacao.php b/application/views/localizacao/formCadLocalizacao.php[m
+[1mindex a0a4d47..19fef6f 100755[m
+[1m--- a/application/views/localizacao/formCadLocalizacao.php[m
+[1m+++ b/application/views/localizacao/formCadLocalizacao.php[m
+[36m@@ -40,6 +40,6 @@[m
+ 		</select>[m
+     </div>[m
+   [m
+[31m-    <button type="submit" class="btn btn-default">Salvar</button>[m
+[32m+[m[32m    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"></i> Salvar</button>[m
+ [m
+   </form>[m
+\ No newline at end of file[m
+[1mdiff --git a/application/views/localizacao/formEdiLocalizacao.php b/application/views/localizacao/formEdiLocalizacao.php[m
+[1mindex aa73c0d..1de22b4 100755[m
+[1m--- a/application/views/localizacao/formEdiLocalizacao.php[m
+[1m+++ b/application/views/localizacao/formEdiLocalizacao.php[m
+[36m@@ -40,6 +40,6 @@[m
+ 		</select>[m
+     </div>[m
+   [m
+[31m-    <button type="submit" class="btn btn-default">Salvar</button>[m
+[32m+[m[32m    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"></i> Salvar</button>[m
+ [m
+   </form>[m
+\ No newline at end of file[m
+[1mdiff --git a/application/views/localizacao/listarLocalizacao_view.php b/application/views/localizacao/listarLocalizacao_view.php[m
+[1mindex 503455b..e59c994 100755[m
+[1m--- a/application/views/localizacao/listarLocalizacao_view.php[m
+[1m+++ b/application/views/localizacao/listarLocalizacao_view.php[m
+[36m@@ -16,15 +16,6 @@[m
+     }[m
+ ?>[m
+ [m
+[31m-<!-- FORM DE PESQUISAR-->[m
+[31m-	<div class="row">[m
+[31m-		<div class="col-md-2">[m
+[31m-			<button class="btn btn-success btn-lg" alt="Adicionar" data-toggle="modal" data-toggle="tooltip" data-placement="bottom" title="Adicionar" data-target="#myModal" value="Cadastrar"><i class="glyphicon glyphicon-plus"></i></button>[m
+[31m-		</div>[m
+[31m-</div>[m
+[31m-<!-- FIm do Form de Pesquisar-->[m
+[31m-[m
+[31m-[m
+ <div class="row tablist">[m
+ 	<table class="table table-hover" id="myTable">[m
+ 		<thead>[m
+[36m@@ -52,63 +43,3 @@[m
+ [m
+ 	</table>[m
+ </div>[m
+[31m-[m
+[31m-[m
+[31m-<!-- mostrando a paginacao-->[m
+[31m-<div class="row">[m
+[31m-	<div class="col-md-12">[m
+[31m-		<?php echo $this->pagination->create_links();?>[m
+[31m-	</div>[m
+[31m-</div>[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-[m
+[31m-<!-- Modal -->[m
+[31m-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">[m
+[31m-  <div class="modal-dialog" role="document">[m
+[31m-  <!-- Inserindo o formulario-->[m
+[31m-    <form action="<?php echo base_url('localizacao/cadastrarLocalizacao'); ?>" method="post">[m
+[31m-    <div class="modal-content">[m
+[31m-      <div class="modal-header">[m
+[31m-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>[m
+[31m-        <h4 class="modal-title" id="myModalLabel">Cadastrar Localização</h4>[m
+[31m-      </div>[m
+[31m-      <div class="modal-body">[m
+[31m-[m
+[31m-	      	<div class="form-group">[m
+[31m-        <label class="control-label" for="nome">Nome</label>[m
+[31m-        <input class="form-control" name="loc_nome" id="nome" placeholder="Digite o nome do local" autofocus type="text" required>[m
+[31m-    </div>[m
+[31m-[m
+[31m-    <div class="form-group">[m
+[31m-        <label class="control-label" for="pavimento">Pavimento</label>[m
+[31m-        <select name="loc_pavimento" id="pavimento" class="form-control">[m
+[31m-          <option value="Primeiro">Primeiro</option>[m
+[31m-          <option value="Segundo">Segundo</option>[m
+[31m-          <option value="Terceiro">Terceiro</option>[m
+[31m-        </select>[m
+[31m-    </div>[m
+[31m-[m
+[31m-    <div class="form-group">[m
+[31m-        <label class="control-label" for="status">Status</label>[m
+[31m-        <select name="loc_status" id="status" class="form-control">[m
+[31m-		  <option value="1">Ativado</option>[m
+[31m-		  <option value="0">Desativado</option>[m
+[31m-		</select>[m
+[31m-    </div>[m
+[31m-[m
+[31m-      	[m
+[31m-[m
+[31m-		</div>[m
+[31m-      <div class="modal-footer">[m
+[31m-      	<button type="submit" class="btn btn-primary">Salvar</button>[m
+[31m-        <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>[m
+[31m-      </div>[m
+[31m-    </div>[m
+[31m-[m
+[31m-   </form>[m
+[31m-  </div>[m
+[31m-</div>[m
+\ No newline at end of file[m
+[1mdiff --git a/application/views/partials/lateral-localizacao.php b/application/views/partials/lateral-localizacao.php[m
+[1mindex 76a16a0..179e697 100755[m
+[1m--- a/application/views/partials/lateral-localizacao.php[m
+[1m+++ b/application/views/partials/lateral-localizacao.php[m
+[36m@@ -1,5 +1,8 @@[m
+ <ul class="nav nav-pills nav-stacked">[m
+[31m-        <li class="<?php if($this->uri->segment(2)=="listarLocalizacao" || $this->uri->segment(2)=="pesquisarLocalizacao"){echo "active";}?>">[m
+[32m+[m		[32m<li class="<?php if($this->uri->segment(2)=="cadastrarLocalizacao" || $this->uri->segment(2)=="atualizarLocalizacao"){echo "active";}?>">[m
+[32m+[m[32m            <a href="<?php echo base_url('localizacao/cadastrarLocalizacao')?>"><?php if($this->uri->segment(2) == "atualizarLocalizacao"){ echo "Editar Localização"; } else{ echo "Cadastrar Localização"; }?></a>[m
+[32m+[m[32m        </li>[m
+[32m+[m[32m        <li class="<?php if($this->uri->segment(2)=="listarLocalizacao"){echo "active";}?>">[m
+             <a href="<?php echo base_url('localizacao/listarLocalizacao')?>">Gerenciador de Localização</a>[m
+         </li>[m
+         <li class="<?php if($this->uri->segment(2)==""){echo "active";}?>">[m
+[1mdiff --git a/application/views/relatorio.php b/application/views/relatorio.php[m
+[1mdeleted file mode 100755[m
+[1mindex 02519ca..0000000[m
+[1m--- a/application/views/relatorio.php[m
+[1m+++ /dev/null[m
+[36m@@ -1,72 +0,0 @@[m
+[31m-<html lang="pt-BR">[m
+[31m-    [m
+[31m-    <head>[m
+[31m-        <meta charset="utf-8">[m
+[31m-        <meta name="viewport" content="width=device-width, initial-scale=1">[m
+[31m-        <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>[m
+[31m-        <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>[m
+[31m-        <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"[m
+[31m-        rel="stylesheet" type="text/css">[m
+[31m-        <link rel="stylesheet" href="css/theme.css">[m
+[31m-[m
+[31m-        <link rel="stylesheet" href="css/bootstrap.css">[m
+[31m-        <link rel="stylesheet" href="css/bootstrap-theme.css">[m
+[31m-        <link rel="stylesheet" href="css/style.css">[m
+[31m-[m
+[31m-        <link rel="shortcut icon" href="favicon.ico" >[m
+[31m-[m
+[31m-        <title>Fast Inventory</title>[m
+[31m-    </head>[m
+[31m-    [m
+[31m-    <body>[m
+[31m-        <?php [m
+[31m-            include_once "includes/topo-relatorio.php";[m
+[31m-        ?>[m
+[31m-[m
+[31m-        <?php [m
+[31m-            include_once "includes/mglh-relatorio.php";[m
+[31m-        ?>[m
+[31m-        [m
+[31m-        <!-- Inicio Menu Lateral-->[m
+[31m-        <div class="section">[m
+[31m-            <div class="container">[m
+[31m-                <div class="row">[m
+[31m-                    <?php[m
+[31m-                        include_once "includes/lateral-relatorio.php";[m
+[31m-                    ?>[m
+[31m-                    <div class="col-md-1">[m
+[31m-                        <br />[m
+[31m-                    </div>[m
+[31m-                    <div class="col-md-7 text-left">[m
+[31m-                        <form role="form">[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="senhaAtual">Senha Atual</label>[m
+[31m-                                <input class="form-control" id="senhaAtual"[m
+[31m-                                placeholder="Senha Atual" type="text">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group ">[m
+[31m-                                <label class="control-label" for="novaSenha">Nova Senha</label>[m
+[31m-                                <input class="form-control" id="novaSenha"[m
+[31m-                                placeholder="Nova Senha" type="password">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="novamenteSenha">Confirme a Senha Novamente</label>[m
+[31m-                                <input class="form-control" id="novamenteSenha"[m
+[31m-                                placeholder="Confirmação de Senha" type="password">[m
+[31m-                            </div>[m
+[31m-                            <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"></i> Salvar</button>[m
+[31m-                        </form>[m
+[31m-                    </div>[m
+[31m-                </div>[m
+[31m-            </div>[m
+[31m-        </div>[m
+[31m-        <!-- Fim Menu Lateral -->[m
+[31m-[m
+[31m-        <!-- Inicio rodape-->[m
+[31m-        <?php[m
+[31m-            include_once "includes/footer.php";[m
+[31m-        ?>[m
+[31m-        <!-- fim rodape -->[m
+[31m-    </body>[m
+[31m-[m
+[31m-</html>[m
+\ No newline at end of file[m
+[1mdiff --git a/application/views/usuario.php b/application/views/usuario.php[m
+[1mdeleted file mode 100755[m
+[1mindex 7b6c576..0000000[m
+[1m--- a/application/views/usuario.php[m
+[1m+++ /dev/null[m
+[36m@@ -1,72 +0,0 @@[m
+[31m-<html lang="pt-BR">[m
+[31m-    [m
+[31m-    <head>[m
+[31m-        <meta charset="utf-8">[m
+[31m-        <meta name="viewport" content="width=device-width, initial-scale=1">[m
+[31m-        <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>[m
+[31m-        <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>[m
+[31m-        <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"[m
+[31m-        rel="stylesheet" type="text/css">[m
+[31m-        <link rel="stylesheet" href="css/theme.css">[m
+[31m-[m
+[31m-        <link rel="stylesheet" href="css/bootstrap.css">[m
+[31m-        <link rel="stylesheet" href="css/bootstrap-theme.css">[m
+[31m-        <link rel="stylesheet" href="css/style.css">[m
+[31m-[m
+[31m-        <link rel="shortcut icon" href="favicon.ico" >[m
+[31m-[m
+[31m-        <title>Fast Inventory</title>[m
+[31m-    </head>[m
+[31m-    [m
+[31m-    <body>[m
+[31m-        <?php [m
+[31m-            include_once "includes/topo-usuario.php";[m
+[31m-        ?>[m
+[31m-[m
+[31m-        <?php [m
+[31m-            include_once "includes/mglh-usuario.php";[m
+[31m-        ?>[m
+[31m-        [m
+[31m-        <!-- Inicio Menu Lateral-->[m
+[31m-        <div class="section">[m
+[31m-            <div class="container">[m
+[31m-                <div class="row">[m
+[31m-                    <?php[m
+[31m-                        include_once "includes/lateral-usuario.php";[m
+[31m-                    ?>[m
+[31m-                    <div class="col-md-1">[m
+[31m-                        <br />[m
+[31m-                    </div>[m
+[31m-                    <div class="col-md-7 text-left">[m
+[31m-                        <form role="form">[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="senhaAtual">Senha Atual</label>[m
+[31m-                                <input class="form-control" id="senhaAtual"[m
+[31m-                                placeholder="Senha Atual" type="text">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group ">[m
+[31m-                                <label class="control-label" for="novaSenha">Nova Senha</label>[m
+[31m-                                <input class="form-control" id="novaSenha"[m
+[31m-                                placeholder="Nova Senha" type="password">[m
+[31m-                            </div>[m
+[31m-                            <div class="form-group">[m
+[31m-                                <label class="control-label" for="novamenteSenha">Confirme a Senha Novamente</label>[m
+[31m-                                <input class="form-control" id="novamenteSenha"[m
+[31m-                                placeholder="Confirmação de Senha" type="password">[m
+[31m-                            </div>[m
+[31m-                            <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"></i> Salvar</button>[m
+[31m-                        </form>[m
+[31m-                    </div>[m
+[31m-                </div>[m
+[31m-            </div>[m
+[31m-        </div>[m
+[31m-        <!-- Fim Menu Lateral -->[m
+[31m-[m
+[31m-        <!-- Inicio rodape-->[m
+[31m-        <?php[m
+[31m-            include_once "includes/footer.php";[m
+[31m-        ?>[m
+[31m-        <!-- fim rodape -->[m
+[31m-    </body>[m
+[31m-[m
+[31m-</html>[m
+\ No newline at end of file[m
+[1mdiff --git a/application/views/welcome_message.php b/application/views/welcome_message.php[m
+[1mdeleted file mode 100755[m
+[1mindex f511563..0000000[m
+[1m--- a/application/views/welcome_message.php[m
+[1m+++ /dev/null[m
+[36m@@ -1,89 +0,0 @@[m
+[31m-<?php[m
+[31m-defined('BASEPATH') OR exit('No direct script access allowed');[m
+[31m-?><!DOCTYPE html>[m
+[31m-<html lang="en">[m
+[31m-<head>[m
+[31m-	<meta charset="utf-8">[m
+[31m-	<title>Welcome to CodeIgniter</title>[m
+[31m-[m
+[31m-	<style type="text/css">[m
+[31m-[m
+[31m-	::selection { background-color: #E13300; color: white; }[m
+[31m-	::-moz-selection { background-color: #E13300; color: white; }[m
+[31m-[m
+[31m-	body {[m
+[31m-		background-color: #fff;[m
+[31m-		margin: 40px;[m
+[31m-		font: 13px/20px normal Helvetica, Arial, sans-serif;[m
+[31m-		color: #4F5155;[m
+[31m-	}[m
+[31m-[m
+[31m-	a {[m
+[31m-		color: #003399;[m
+[31m-		background-color: transparent;[m
+[31m-		font-weight: normal;[m
+[31m-	}[m
+[31m-[m
+[31m-	h1 {[m
+[31m-		color: #444;[m
+[31m-		background-color: transparent;[m
+[31m-		border-bottom: 1px solid #D0D0D0;[m
+[31m-		font-size: 19px;[m
+[31m-		font-weight: normal;[m
+[31m-		margin: 0 0 14px 0;[m
+[31m-		padding: 14px 15px 10px 15px;[m
+[31m-	}[m
+[31m-[m
+[31m-	code {[m
+[31m-		font-family: Consolas, Monaco, Courier New, Courier, monospace;[m
+[31m-		font-size: 12px;[m
+[31m-		background-color: #f9f9f9;[m
+[31m-		border: 1px solid #D0D0D0;[m
+[31m-		color: #002166;[m
+[31m-		display: block;[m
+[31m-		margin: 14px 0 14px 0;[m
+[31m-		padding: 12px 10px 12px 10px;[m
+[31m-	}[m
+[31m-[m
+[31m-	#body {[m
+[31m-		margin: 0 15px 0 15px;[m
+[31m-	}[m
+[31m-[m
+[31m-	p.footer {[m
+[31m-		text-align: right;[m
+[31m-		font-size: 11px;[m
+[31m-		border-top: 1px solid #D0D0D0;[m
+[31m-		line-height: 32px;[m
+[31m-		padding: 0 10px 0 10px;[m
+[31m-		margin: 20px 0 0 0;[m
+[31m-	}[m
+[31m-[m
+[31m-	#container {[m
+[31m-		margin: 10px;[m
+[31m-		border: 1px solid #D0D0D0;[m
+[31m-		box-shadow: 0 0 8px #D0D0D0;[m
+[31m-	}[m
+[31m-	</style>[m
+[31m-</head>[m
+[31m-<body>[m
+[31m-[m
+[31m-<div id="container">[m
+[31m-	<h1>Welcome to CodeIgniter!</h1>[m
+[31m-[m
+[31m-	<div id="body">[m
+[31m-		<p>The page you are looking at is being generated dynamically by CodeIgniter.</p>[m
+[31m-[m
+[31m-		<p>If you would like to edit this page you'll find it located at:</p>[m
+[31m-		<code>application/views/welcome_message.php</code>[m
+[31m-[m
+[31m-		<p>The corresponding controller for this page is found at:</p>[m
+[31m-		<code>application/controllers/Welcome.php</code>[m
+[31m-[m
+[31m-		<p>If you are exploring CodeIgniter for the very first time, you should start by reading the <a href="user_guide/">User Guide</a>.</p>[m
+[31m-	</div>[m
+[31m-[m
+[31m-	<p class="footer">Page rendered in <strong>{elapsed_time}</strong> seconds. <?php echo  (ENVIRONMENT === 'development') ?  'CodeIgniter Version <strong>' . CI_VERSION . '</strong>' : '' ?></p>[m
+[31m-</div>[m
+[31m-[m
+[31m-</body>[m
+[31m-</html>[m
+\ No newline at end of file[m
