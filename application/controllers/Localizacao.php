@@ -24,7 +24,7 @@ class Localizacao extends CI_Controller {
 			$this->loc->create($dados);
 			$this->session->set_flashdata('ok', 'Cadastro efetuado com sucesso!');
 
-			redirect(base_url('localizacao/cadastrarLocalizacao', 'refresh'));
+			redirect(base_url('localizacao/listarLocalizacao'));
 			
 		}
 		
