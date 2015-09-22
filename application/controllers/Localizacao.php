@@ -46,8 +46,7 @@ class Localizacao extends CI_Controller {
 	}
 
 	public function atualizarLocalizacao($id=NULL){
-		$this->db->where('loc_id', $id);
-		$data['localizacao'] = $this->db->get('tbl_local')->result();
+		$data['localizacao'] = $this->loc->atualizar($id);
 		$this->template->set_partial('lateral', 'partials/lateral-localizacao')->set_layout('default')->build('localizacao/formEdiLocalizacao', $data);
 	}
 
@@ -56,13 +55,14 @@ class Localizacao extends CI_Controller {
 		$this->form_validation->set_message('max_length', 'O campo %s excedeu o limite de caracteres.');
 		$this->form_validation->set_rules('loc_nome', 'NOME', 'required|max_length[50]|ucwords');
 
+		//pegando o id do formulario -> o campo esta escondido
 		$id = $this->input->post('loc_id');
-		$this->db->where('loc_id', $id);
+
 		//verificando se passou pela validacao
 		if($this->form_validation->run() == TRUE){
 			$dados = elements(array('loc_nome', 'loc_pavimento', 'loc_status'), $this->input->post());
-			
-			if($this->db->update('tbl_local', $dados)){
+			$retorno = $this->loc->editar($id, $dados);
+			if($retorno == 1){
 				$this->session->set_flashdata('ok', 'Editado efetuado com sucesso!');
 				redirect('localizacao/listarLocalizacao');
 			}

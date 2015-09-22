@@ -12,10 +12,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			}
 		}
 
-		
+		public function editar($id=NULL, $dados=NULL){
+
+			if($id != NULL){
+				$this->db->where('loc_id', $id);
+				$this->db->update('tbl_local', $dados);
+				return 1;
+			}
+
+			return 0;
+		}
+
+
+		public function atualizar($id=NULL){
+			//verificado o id no db
+			$this->db->where('loc_id', $id);
+			//retornando o resultado
+			return $this->db->get('tbl_local')->result();
+		}
 
 		public function excluir($id=NULL){
-
 			$this->db->where('loc_id', $id);
 			return $this->db->delete('tbl_local');
 		}
