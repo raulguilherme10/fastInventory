@@ -12,22 +12,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			}
 		}
 
+		
+
 		public function excluir($id=NULL){
 
 			$this->db->where('loc_id', $id);
 			return $this->db->delete('tbl_local');
 		}
 
-		public function pesquisar($nome, $tipo, $paginas, $seg){
-			//fazendo uma query para pesquisar uma determinada localizacao
-			//$this->db->limit($seg, $paginas);
-			$this->db->select('*');
-        	$this->db->from('tbl_local');
-        	$this->db->like('loc_nome', $nome, 'after');
-        	$query = $this->db->get();
-
-			return $query;
-			
+		public function listarTodos(){
+			//query para trazer todos os dados da tabela
+			return $this->db->get('tbl_local');
 		}
 
 

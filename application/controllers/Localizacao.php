@@ -14,8 +14,7 @@ class Localizacao extends CI_Controller {
 
 		//validaçao do formulario
 		$this->form_validation->set_message('max_length', 'O campo %s excedeu o limite de caracteres.');
-		$this->form_validation->set_message('is_unique', 'Esse %s para localização já existe no banco de dados.');
-		$this->form_validation->set_rules('loc_nome', 'NOME', 'required|is_unique[tbl_local.loc_nome]|max_length[50]|ucwords');
+		$this->form_validation->set_rules('loc_nome', 'NOME', 'required|max_length[50]|ucwords');
 
 		//verificando se passou pela validacao
 		if($this->form_validation->run() == TRUE){
@@ -31,7 +30,7 @@ class Localizacao extends CI_Controller {
 	}
 
 	public function listarLocalizacao(){
-		$dados['query'] = $this->db->get('tbl_local');
+		$dados['query'] = $this->loc->listarTodos();
 
 		$this->load->view('localizacao/listarLocalizacao_view', $dados);
 		$this->template->set_partial('lateral', 'partials/lateral-localizacao')->set_layout('default')->build('localizacao/listarLocalizacao_view');
