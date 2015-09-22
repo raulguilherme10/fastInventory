@@ -6,7 +6,6 @@ class Localizacao extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('Localizacao_model', 'loc');
-		$this->load->model('Paginacao_model', 'pag');
 		$this->load->model('Code_model', 'code');
 		$this->load->library('ciqrcode');
 	}
@@ -32,7 +31,6 @@ class Localizacao extends CI_Controller {
 	}
 
 	public function listarLocalizacao(){
-
 		$dados['query'] = $this->db->get('tbl_local');
 
 		$this->load->view('localizacao/listarLocalizacao_view', $dados);
@@ -41,11 +39,9 @@ class Localizacao extends CI_Controller {
 	}
 
 	public function excluirLocalizacao($id=NULL){
-		//verificando uma condicao e deletando um item da tabela
-		$this->db->where('loc_id', $id);
-		if($this->db->delete('tbl_local')){
-			$this->session->set_flashdata('ok', 'Exclusão efetuada com sucesso!');
-		}
+			if($this->loc->excluir($id)){
+				$this->session->set_flashdata('ok', 'Exclusão efetuada com sucesso!');
+			}
 
 		redirect(base_url('localizacao/listarLocalizacao'));
 	}

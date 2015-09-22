@@ -12,6 +12,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			}
 		}
 
+		public function excluir($id=NULL){
+
+			$this->db->where('loc_id', $id);
+			return $this->db->delete('tbl_local');
+		}
+
 		public function pesquisar($nome, $tipo, $paginas, $seg){
 			//fazendo uma query para pesquisar uma determinada localizacao
 			//$this->db->limit($seg, $paginas);
