@@ -28,6 +28,29 @@
         </div>
     </div>
 
+     <?php if($msg != NULL){ ?>   
+        <div class="section">
+            <div class="container">
+                <div class="row">
+                    <div class = "col-md-4">
+
+                    </div>
+
+                    <div class = "col-md-4">
+                        <div class="alert alert-danger" role="alert">
+                            <?php echo $msg;?>
+                        </div>
+                    </div>
+
+                    <div class = "col-md-4">
+
+                    </div>
+                </div>
+            </div> 
+        </div>
+    <?php } ?>
+  
+
         <div class="section">
             <div class="container">
                 <div class="row">
@@ -36,14 +59,14 @@
                     </div>
                     
                     <div class="col-md-4">
-                            <form action="<?php echo base_url('auth/login'); ?>" method="post">
+                            <form  action = "<?php echo base_url('login/logarUsuario');?>" method="post">
                             <div class="form-group">
                                 <label class="control-label" for="usuario">Usuário</label>
-                                <input class="form-control" name="identity" id="usuario" placeholder="Digite seu nome de usuário" type="text">
+                                <input class="form-control" name="usuario" id="usuario" placeholder="Digite seu nome de usuário" type="text">
                             </div>
                             <div class="form-group">
                                 <label class="control-label" for="senha">Senha</label>
-                                <input class="form-control" name="password" id="senha" placeholder="Digite sua senha" type="password">
+                                <input class="form-control" name="senha" id="senha" placeholder="Digite sua senha" type="password">
                             </div>
                             <button type="submit" class="btn btn-default">Entrar</button>
                         </form>

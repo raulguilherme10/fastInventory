@@ -10,7 +10,17 @@ class Localizacao extends CI_Controller {
 		$this->load->library('ciqrcode');
 	}
 
+
+	//funçao para verificar se a sessao do usuario foi ativada
+	public function verificarSessao(){
+		if($this->session->userdata('logado') == FALSE){
+			redirect('login');
+		}
+	}
+
 	public function cadastrarLocalizacao(){
+		//verificando a sessao
+		$this->verificarSessao();
 
 		//validaçao do formulario
 		$this->form_validation->set_message('max_length', 'O campo %s excedeu o limite de caracteres.');
@@ -30,6 +40,10 @@ class Localizacao extends CI_Controller {
 	}
 
 	public function listarLocalizacao(){
+
+		//verificando a sessao
+		$this->verificarSessao();
+
 		$dados['query'] = $this->loc->listarTodos();
 
 		$this->load->view('localizacao/listarLocalizacao_view', $dados);
@@ -38,6 +52,10 @@ class Localizacao extends CI_Controller {
 	}
 
 	public function excluirLocalizacao($id=NULL){
+
+		//verificando a sessao
+		$this->verificarSessao();
+
 			if($this->loc->excluir($id)){
 				$this->session->set_flashdata('ok', 'Exclusão efetuada com sucesso!');
 			}
@@ -46,11 +64,19 @@ class Localizacao extends CI_Controller {
 	}
 
 	public function atualizarLocalizacao($id=NULL){
+
+		//verificando a sessao
+		$this->verificarSessao();
+
 		$data['localizacao'] = $this->loc->atualizar($id);
 		$this->template->set_partial('lateral', 'partials/lateral-localizacao')->set_layout('default')->build('localizacao/formEdiLocalizacao', $data);
 	}
 
 	public function editarLocalizacao(){
+
+		//verificando a sessao
+		$this->verificarSessao();
+
 		//validaçao do formulario
 		$this->form_validation->set_message('max_length', 'O campo %s excedeu o limite de caracteres.');
 		$this->form_validation->set_rules('loc_nome', 'NOME', 'required|max_length[50]|ucwords');
@@ -72,6 +98,10 @@ class Localizacao extends CI_Controller {
 	
 
 	public function gerarQRCode($id){
+
+		//verificando a sessao
+		$this->verificarSessao();
+		
 		$query = $this->code->gerarQrCode($id, 'local');
 		if($query->result() != NULL){
 			foreach($query->result() as $sql){

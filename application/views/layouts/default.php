@@ -75,7 +75,7 @@
                             <a href="<?php echo base_url('relatorio'); ?>"><i class="glyphicon glyphicon-file"></i> Relatório</a>
                         </li>
                         <li>
-                            <a href="<?php echo base_url('auth/logout'); ?>"><i class="glyphicon glyphicon-off"></i> Sair</a>
+                            <a href="<?php echo base_url('login/logoutUsuario'); ?>"><i class="glyphicon glyphicon-off"></i> Sair</a>
                         </li>
                     </ul>
                 </div>
