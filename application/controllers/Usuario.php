@@ -52,25 +52,35 @@ class Usuario extends CI_Controller {
 		//verificando se passou pela validacao
 		if($this->form_validation->run() == TRUE){
 			$usuario = $this->input->post('usuario');
-			$usuario = str_replace(" ","",$usuario);
+			$usuario = str_replace(" ",".",$usuario);
 			$dados['usu_usuario'] = $usuario;
 			$dados['usu_senha'] = md5($this->input->post('senha'));
 			$dados['usu_idGru'] = $this->input->post('tipo');
 			$dados['usu_status'] = $this->input->post('status');
 
-			//$dados = elements(array( $usuario, 'senha', 'tipo', 'status'), $this->input->post());
+			//passando o vetor para a funcao de cadastrar
 			$this->usu->create($dados);
 
 			$this->session->set_flashdata('ok', 'Cadastro efetuado com sucesso!');
+			redirect('usuario/listarUsuario');
 
 		}else{
 			$this->index();
 		}
+		
+	}
 
-		
+	public function listarUsuario(){
+		//verificando a sessao
+		$this->verificarSessao();
+		//pegando o id do usuario pela sessao
+		$id = $this->session->userdata('usuario');
+		//armazenando em um vetor todos os usuarios
+		$data['query'] = $this->usu->listarTodos($id);
 
-		
-		
+		$this->load->view('usuario/listarTodos_view', $data);
+		$this->template->set_partial('lateral', 'partials/lateral-usuario')->set_layout('default')->build('usuario/listarTodos_view');
+
 	}
 
 	public function editarUsuario(){
@@ -81,10 +91,19 @@ class Usuario extends CI_Controller {
 	}
 
 
-	public function excluirUsuario(){
-
+	public function excluirUsuario($id=NULL){
 		//verificando a sessao
 		$this->verificarSessao();
+		if($id != $this->session->userdata('usuario')){
+			if($this->usu->excluir($id)){
+				$this->session->set_flashdata('ok', 'Exclusão efetuada com sucesso!');
+			}
+		}else{
+			$this->session->set_flashdata('erro', 'Não é permitido esta exclusão!');
+		}
+		
+
+		redirect(base_url('usuario/listarUsuario'));
 
 	}
 }

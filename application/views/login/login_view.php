@@ -59,6 +59,7 @@
                     </div>
                     
                     <div class="col-md-4">
+
                             <form  action = "<?php echo base_url('login/logarUsuario');?>" method="post">
                             <div class="form-group">
                                 <label class="control-label" for="usuario">Usuário</label>

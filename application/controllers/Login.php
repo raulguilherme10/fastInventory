@@ -17,7 +17,7 @@ class Login extends CI_Controller {
 
 		//recebendo os valores do formulario
 		$usuario = $this->input->post('usuario');
-		$senha = $this->input->post('senha');
+		$senha = md5($this->input->post('senha'));
 		//chamando a model de login p/ verificcar se existe o usuario
 		$data['usuario'] = $this->login->logar($usuario, $senha);
 			if(count($data['usuario']) == 1){
