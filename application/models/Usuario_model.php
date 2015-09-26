@@ -38,11 +38,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 		}
 
-		public function verificarSenha($senha){
-
+		public function verificarSenha($id=NULL){
+			$this->db->select('usu_senha');
+			$this->db->where('usu_id', $id);
+			return $this->db->get('tbl_usuario');
 		}
 
-		public function trocarSenha($id){
+		public function trocarSenha($id=NULL, $data){
 			//verificando se veio o id do usuario
 			if($id != NULL){
 				$this->db->where('usu_id', $id);

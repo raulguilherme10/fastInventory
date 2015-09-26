@@ -129,32 +129,53 @@ class Usuario extends CI_Controller {
 		$this->verificarSessao();
 
 		//validacao do formulario
-		$this->$this->form_validation->set_rules('senhaAnt', 'SENHA ANTIGA', 'required|min_length[5]|max_length[10]', array(
+		$this->form_validation->set_rules('senhaAnt', 'SENHA ANTIGA', 'required|min_length[5]|max_length[10]', array(
 													'required' => 'O campo %s é obrigatório.',
 													'min_length' => 'O mínimo no campo %s é 5 caracteres.',
 													'max_length' => 'O campo %s excedeu o limite de 10 caracteres.'));
-		$this->$this->form_validation->set_rules('senhaNov', 'Nova SENHA', 'required|min_length[5]|max_length[10]', array(
+		$this->form_validation->set_rules('senhaNov', 'Nova SENHA', 'required|min_length[5]|max_length[10]', array(
 													'required' => 'O campo %s é obrigatório.',
 													'min_length' => 'O mínimo no campo %s é 5 caracteres.',
 													'max_length' => 'O campo %s excedeu o limite de 10 caracteres.'));
 		$this->form_validation->set_rules('senhaRep', 'REPITA A SENHA', 'required|min_length[5]|max_length[10]|matches[senhaNov]', array(
 								'required' => 'O campo %s é obrigatório.',
-								'min_length' => ' mínimo no campo %s é 5 caracteres.',
+								'min_length' => 'O mínimo no campo %s é 5 caracteres.',
 								'max_length' => 'O campo %s excedeu o limite de 10 caracteres.',
 								'matches' => 'O campo %s não corresponde ao campo %s.'));
 
 			//vericando se os dados passaram pela validaçao
-			//if($this->form_validation->run() == TRUE){
-				//obtendo o id do usuario da sessao
-				//$id = $this->session->userdata('usuario');
-				$data['usu_senha'] = md5($this->input->post('senhaNov'));
-				//$retorno = $this->usu->trocarSenha($id, $data);
-					//if($retorno == 1){
-						//$this->session->set_flashdata('ok', 'Nova senha cadastrada com sucesso!');
-					//}else{
-						//this->session->set_flashdata('erro', 'Erro ao cadastrar nova senha');
-					//}
-				
+			if($this->form_validation->run() == TRUE){
+
+				//pegando o id do usuario logado
+				//recebendo a senha antiga do formulario
+				//chamando a funcao que traz a senha do usuario
+				$id = $this->session->userdata('usuario');
+				$senhaAnt = $this->input->post('senhaAnt');
+				$verifSenha = $this->usu->verificarSenha($id);
+
+					//tirando o valor da senha pelo foreach
+					foreach($verifSenha->result() as $res){
+						$atualSenha = $res->usu_senha;
+					}
+						//verificando se a senha cadastrada confere com a senha antiga
+						if($atualSenha == md5($senhaAnt)){
+							//colocando a nova senha em um vetor e criptografando ela
+							//chamando a funcao de trocar senha e passando o id e o vetor com a nova senha
+							$data['usu_senha'] = md5($this->input->post('senhaNov'));
+							$retorno = $this->usu->trocarSenha($id, $data);
+
+								//vericando o retorno da funcao
+								if($retorno == 1){
+									$this->session->set_flashdata('ok', 'Nova senha cadastrada com sucesso!');
+								}else{
+									$this->session->set_flashdata('erro', 'Erro ao cadastrar a nova senha');
+								}
+
+						}else{
+							$this->session->set_flashdata('erro', 'A senha antiga não confere com a senha cadastrada!');
+						}
+
+
 			}
 
 		//$this->load->view('usuario/trocarSenha_view');

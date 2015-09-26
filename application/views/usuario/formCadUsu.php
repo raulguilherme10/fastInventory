@@ -3,7 +3,7 @@
     ?>
         <div class="alert alert-success" role="alert">
             <?php echo $this->session->flashdata('ok')?>
-        </div
+        </div>
     <?php
     }else{
         if(validation_errors() != NULL){
