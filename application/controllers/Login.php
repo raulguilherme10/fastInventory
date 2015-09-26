@@ -24,6 +24,7 @@ class Login extends CI_Controller {
 				$dados['usuario'] = $data['usuario'][0]->usu_id;
 				$dados['senha'] = $data['usuario'][0]->usu_usuario;
 				$dados['status'] = $data['usuario'][0]->usu_status;
+				$dados['tipo'] = $data['usuario'][0]->usu_idGru;
 				$dados['logado'] = TRUE;
 				$this->session->set_userdata($dados);
 				

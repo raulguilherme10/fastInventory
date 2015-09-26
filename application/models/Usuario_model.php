@@ -25,4 +25,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			$this->db->where('usu_id', $id);
 			return $this->db->delete('tbl_usuario');
 		}
+
+		public function restaurarSenha($id=NULL, $data){
+			//$this->db->update('tbl_usuario');
+			if($id != NULL){
+				$this->db->where('usu_id', $id);
+				$this->db->update('tbl_usuario', $data);
+				return 1;
+			}else{
+				return 0;
+			}
+
+		}
+
+		public function verificarSenha($senha){
+
+		}
+
+		public function trocarSenha($id){
+			//verificando se veio o id do usuario
+			if($id != NULL){
+				$this->db->where('usu_id', $id);
+				$this->db->update('tbl_usuario', $data);
+				return 1;
+			}else{
+				return 0;
+			}
+		}
 	}

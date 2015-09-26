@@ -106,4 +106,58 @@ class Usuario extends CI_Controller {
 		redirect(base_url('usuario/listarUsuario'));
 
 	}
+
+	public function restaurarSenha($id=NULL){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		$data = array('usu_senha' => md5('fatec'));
+		$retorno = $this->usu->restaurarSenha($id, $data);
+			if($retorno == 1){
+				$this->session->set_flashdata('ok', 'Senha restaurada com sucesso!');
+			}else{
+				$this->session->set_flashdata('erro', 'Erro na restuaração da senha!');
+			}
+
+			redirect(base_url('usuario/listarUsuario'));
+
+
+	}
+
+	public function trocarSenha(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//validacao do formulario
+		$this->$this->form_validation->set_rules('senhaAnt', 'SENHA ANTIGA', 'required|min_length[5]|max_length[10]', array(
+													'required' => 'O campo %s é obrigatório.',
+													'min_length' => 'O mínimo no campo %s é 5 caracteres.',
+													'max_length' => 'O campo %s excedeu o limite de 10 caracteres.'));
+		$this->$this->form_validation->set_rules('senhaNov', 'Nova SENHA', 'required|min_length[5]|max_length[10]', array(
+													'required' => 'O campo %s é obrigatório.',
+													'min_length' => 'O mínimo no campo %s é 5 caracteres.',
+													'max_length' => 'O campo %s excedeu o limite de 10 caracteres.'));
+		$this->form_validation->set_rules('senhaRep', 'REPITA A SENHA', 'required|min_length[5]|max_length[10]|matches[senhaNov]', array(
+								'required' => 'O campo %s é obrigatório.',
+								'min_length' => ' mínimo no campo %s é 5 caracteres.',
+								'max_length' => 'O campo %s excedeu o limite de 10 caracteres.',
+								'matches' => 'O campo %s não corresponde ao campo %s.'));
+
+			//vericando se os dados passaram pela validaçao
+			//if($this->form_validation->run() == TRUE){
+				//obtendo o id do usuario da sessao
+				//$id = $this->session->userdata('usuario');
+				$data['usu_senha'] = md5($this->input->post('senhaNov'));
+				//$retorno = $this->usu->trocarSenha($id, $data);
+					//if($retorno == 1){
+						//$this->session->set_flashdata('ok', 'Nova senha cadastrada com sucesso!');
+					//}else{
+						//this->session->set_flashdata('erro', 'Erro ao cadastrar nova senha');
+					//}
+				
+			}
+
+		//$this->load->view('usuario/trocarSenha_view');
+		$this->template->set_partial('lateral', 'partials/lateral-usuario')->set_layout('default')->build('usuario/trocarSenha_view');
+	}
 }

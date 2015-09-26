@@ -32,6 +32,7 @@
 				<td><?php echo $res->usu_idGru==1?'Administrador':'Comum';?></td>
 				<td><?php echo $res->usu_status==1?'Ativado':'Desativado'; ?></td>
 				<td>
+					<a href="<?php echo base_url('usuario/restaurarSenha/'.$res->usu_id);?>" class="btn btn-info btn-group" onclick="return confirm('Deseja restaurar a senha do usuário?');" data-toggle="tooltip" data-placement="bottom" title="Restaurar senha"><i class="glyphicon glyphicon-refresh"></i></a>
 					<a href="<?php echo base_url('usuario/excluirusuario/'.$res->usu_id);?>" class="btn btn-danger btn-group"  onclick="return confirm('Deseja realmente excluir o usuário?');" data-toggle="tooltip" data-placement="bottom" title="Excluir"><i class="glyphicon glyphicon-trash"></i></a>
 				</td>
 			</tr>
