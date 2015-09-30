@@ -28,7 +28,7 @@ class Login extends CI_Controller {
 				$dados['logado'] = TRUE;
 				$this->session->set_userdata($dados);
 				
-				redirect('home');
+				redirect('usuario');
 
 			}else{
 				$erro['msg'] = 'Usuário ou senha incorretos!';

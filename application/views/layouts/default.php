@@ -55,13 +55,10 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="<?php echo base_url('home')?>">Fast Inventory</a>
+                    <a class="navbar-brand" href="<?php echo base_url('usuario')?>">Fast Inventory</a>
                 </div>
                 <div class="collapse navbar-collapse" id="navbar-ex-collapse">
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="<?php if($this->uri->segment(1)=="home"){echo "active";}?>">
-                            <a href="<?php echo base_url('home'); ?>"><i class="glyphicon glyphicon-home"></i> Home</a>
-                        </li>
                         <li class="<?php if($this->uri->segment(1)=="usuario"){echo "active";}?>">
                             <a href="<?php echo base_url('usuario'); ?>"> <i class="glyphicon glyphicon-user"></i> Usuário</a>
                         </li>

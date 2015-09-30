@@ -185,13 +185,16 @@ class Usuario extends CI_Controller {
 
 	public function trocarStatus($id=NULL){
 
+		//verificando a sessao
+		$this->verificarSessao();
+
 		//verificando se o id eh diferente de nulo
 		if($id != NULL){
 			//chamando a funcao para trazer o status do usuario
 			$status = $this->usu->verificarStatus($id);
 				//armazenando o status da variavel dentro de $x
 				foreach($status->result() as $resul){
-						$x = $resul->usu_status;
+					$x = $resul->usu_status;
 				}
 
 					//verificando o status do usuario e alterando para o valor oposto

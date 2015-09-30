@@ -10,13 +10,17 @@ class Localizacao extends CI_Controller {
 		$this->load->library('ciqrcode');
 	}
 
-
 	//funçao para verificar se a sessao do usuario foi ativada
 	public function verificarSessao(){
 		if($this->session->userdata('logado') == FALSE){
 			redirect('login');
 		}
 	}
+
+	public function index(){
+		redirect('localizacao/cadastrarLocalizacao');
+	}
+
 
 	public function cadastrarLocalizacao(){
 		//verificando a sessao
