@@ -181,4 +181,34 @@ class Usuario extends CI_Controller {
 		//$this->load->view('usuario/trocarSenha_view');
 		$this->template->set_partial('lateral', 'partials/lateral-usuario')->set_layout('default')->build('usuario/trocarSenha_view');
 	}
+
+
+	public function trocarStatus($id=NULL){
+
+		//verificando se o id eh diferente de nulo
+		if($id != NULL){
+			//chamando a funcao para trazer o status do usuario
+			$status = $this->usu->verificarStatus($id);
+				//armazenando o status da variavel dentro de $x
+				foreach($status->result() as $resul){
+						$x = $resul->usu_status;
+				}
+
+					//verificando o status do usuario e alterando para o valor oposto
+					if($x == 1){
+						$data['usu_status'] = 0;
+						$this->usu->trocarStatus($id, $data);
+					}else{
+						$data['usu_status'] = 1;
+						$this->usu->trocarStatus($id, $data);
+					}
+
+					$this->session->set_flashdata('ok', 'Status modificado com sucesso!');
+					redirect(base_url('usuario/listarUsuario'));
+		}else{
+			$this->session->set_flashdata('erro', 'Não é possível trocar o status deste usuário!');
+			redirect(base_url('usuario/listarUsuario'));
+		}
+		
+	}
 }

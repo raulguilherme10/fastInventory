@@ -46,7 +46,7 @@
 
 	<div>
 	<br />
-		<table align="center" border="1">
+		<table align="center" border="1" autosize="1">
 		  <tbody>
 		    <tr>
 		      <th>Head 1</th>

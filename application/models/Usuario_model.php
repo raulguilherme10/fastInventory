@@ -54,4 +54,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				return 0;
 			}
 		}
+
+		public function trocarStatus($id=NULL, $data){
+			
+			//verificando se o id eh nulo
+			//se nao for faz um update no bd
+			if($id != NULL){
+				$this->db->where('usu_id', $id);
+				$this->db->update('tbl_usuario', $data);
+			}
+			
+		}
+
+		public function verificarStatus($id=NULL){
+
+			//verificando se o id eh nulo
+			//se nao for tras o usuario do db
+			if($id != NULL){
+				$this->db->where('usu_id', $id);
+				return $this->db->get('tbl_usuario');
+			}else{
+				return 0;
+			}
+			
+		}
 	}
