@@ -50,7 +50,7 @@ class Ativo extends CI_Controller {
 				$data['emp_razaoSocial'] = $this->input->post('rs');
 
 				//passando os valores para o model
-				$this->ativo->create($data);
+				$this->ativo->create($data, 1);
 				//passando uma mensagem de confirmacao pela session
 				$this->session->set_flashdata('ok', 'Cadastrado com sucesso!');
 				redirect('ativo/index');
@@ -58,6 +58,46 @@ class Ativo extends CI_Controller {
 				//passando uma mensagem de erro
 				$this->index();
 			}
+	}
+
+	public function cadastrarProduto(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//validacao do formulario
+		$this->form_validation->set_rules('marca', 'Marca', 'required|max_length[50]', array(
+										'marcar' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 50 caracteres.'));
+		$this->form_validation->set_rules('cor', 'COR', 'max_length[20]|alpha', array(
+										'max_length' => 'O campo %s excedeu o limite de 20 caracteres.',
+										'alpha' => 'Carateres inválidos no campo %s. '));
+		$this->form_validation->set_rules('descricao', 'DESCRIÇÃO', 'required|max_length[330]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 330 caracteres.'));
+
+			if($this->form_validation->run() == TRUE){
+				//armazenar os valores do formulario em um array
+				$data['pro_marca'] = $this->input->post('marca');
+				$data['pro_cor'] = $this->input->post('cor');
+				$data['pro_descricao'] = $this->input->post('descricao');
+				$data['pro_idTipo'] = $this->input->post('tipo');
+
+				//passado o array para a funcao que insere no bd
+				$this->ativo->create($data, 2);
+				//passando uma mensagem de confirmaçao
+				$this->session->set_flashdata('ok', 'Cadastrado com sucesso!');
+				redirect('ativo/carregarProduto');
+			}else{
+				$this->carregarProduto();
+			}
+
+	}
+
+	public function carregarProduto(){
+		//funcao para trazer os tipos de produto
+		$data['query'] = $this->ativo->listarTodosTipos();
+		$this->load->view('ativo/cadastrarProduto_view', $data);
+		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/cadastrarProduto_view');
 	}
 
 }
