@@ -8,6 +8,7 @@
         <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"
         rel="stylesheet" type="text/css">
 
+
         <!-- DataTables CSS -->
         <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.9/css/jquery.dataTables.css">
   
@@ -15,7 +16,8 @@
         <script type="text/javascript" charset="utf8" src="<?php echo base_url('DataTables/jQuery-2.1.4/jquery-2.1.4.min.js'); ?>"></script>
   
         <script type="text/javascript" src="<?php echo base_url('assets/DataTables/datatables.min.js'); ?>"></script>
-
+        
+       
               
 
 
