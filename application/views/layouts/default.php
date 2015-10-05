@@ -14,8 +14,8 @@
   
         <!-- jQuery -->
         <script type="text/javascript" charset="utf8" src="<?php echo base_url('DataTables/jQuery-2.1.4/jquery-2.1.4.min.js'); ?>"></script>
-  
         <script type="text/javascript" src="<?php echo base_url('assets/DataTables/datatables.min.js'); ?>"></script>
+        <script type="text/javascript" src="<?php echo base_url('assets/Plugins/jquery.maskedinput.min.js'); ?>"></script>
         
        
               
@@ -38,6 +38,11 @@
                 }
             } );
         } );
+
+        $(function() {
+            $("#cnpj").mask("99.999.999/9999-99");
+            $("#ie").mask("99999999-99");
+        });
 
         </script>
         
