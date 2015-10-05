@@ -26,5 +26,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			return $this->db->get('tbl_tipo');
 		}
 
+		public function listarTodosEmpresas(){
+			$this->db->order_by('emp_nomeFantasia');
+			return $this->db->get('tbl_empresa');
+		}
+
+		public function listarTodosItens(){
+			$this->db->order_by('ntf_numNota');
+			return $this->db->get('tbl_notaFiscal');
+		}
+
 
 	}

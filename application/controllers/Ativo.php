@@ -17,7 +17,7 @@ class Ativo extends CI_Controller {
 	public function index(){
 		//verificando a sessao
 		$this->verificarSessao();
-		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/cadastrarAtivo_view');
+		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/cadastrarEmpresa_view');
 	}
 
 	public function cadastrarEmpresa(){
@@ -98,6 +98,20 @@ class Ativo extends CI_Controller {
 		$data['query'] = $this->ativo->listarTodosTipos();
 		$this->load->view('ativo/cadastrarProduto_view', $data);
 		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/cadastrarProduto_view');
+	}
+
+	public function carregarNF(){
+		//funcao para trazer os tipos de produto
+		$data['query'] = $this->ativo->listarTodosEmpresas();
+		$this->load->view('ativo/cadastrarNotaFiscal_view', $data);
+		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/cadastrarNotaFiscal_view');
+	}
+
+	public function carregarItem(){
+		//funcao para trazer os tipos de produto
+		$data['query'] = $this->ativo->listarTodosItens();
+		$this->load->view('ativo/cadastrarItem_view', $data);
+		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/cadastrarItem_view');
 	}
 
 }

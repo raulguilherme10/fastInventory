@@ -42,6 +42,9 @@
         $(function() {
             $("#cnpj").mask("99.999.999/9999-99");
             $("#ie").mask("99999999-99");
+            $("#dataEmissao").mask("99/99/9999");
+            $("#dataVencimento").mask("99/99/9999");
+            $("#data").mask("99/99/9999");
         });
 
         </script>
