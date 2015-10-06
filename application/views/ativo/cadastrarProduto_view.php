@@ -21,7 +21,7 @@
 
     <div class="form-group">
         <label class="control-label" for="tipo">Tipo</label>
-        <select name="tipo" id="tipo" class="form-control">
+        <select name="tipo" id="tipo" class="form-control" autofocus>
             <?php foreach($query->result() as $res) {?>
               <option value="<?php echo $res->tip_id; ?>"><?php echo $res->tip_nome;?></option>
             <?php } ?>
@@ -30,7 +30,7 @@
 
     <div class="form-group">
         <label class="control-label" for="marca">Marca</label>
-        <input class="form-control" name="marca" id="marca" placeholder="Digite a marca do produto." autofocus type="text" required>
+        <input class="form-control" name="marca" id="marca" placeholder="Digite a marca do produto."  type="text" required>
     </div>
 
     <div class="form-group">

@@ -36,5 +36,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			return $this->db->get('tbl_notaFiscal');
 		}
 
+		public function atualizarEmpresa($cnpj = NULL){
+			$this->db->where('emp_cnpj', $cnpj);
+			return $this->db->get('tbl_empresa')->result();
+		}
 
+		public function editarEmpresa($cnpj=NULL, $data=NULL){
+			if($cnpj != NULL){
+				$this->db->where('emp_cnpj', $cnpj);
+				$this->db->update('tbl_empresa', $data);
+				return 1;
+			}
+
+		}
 	}

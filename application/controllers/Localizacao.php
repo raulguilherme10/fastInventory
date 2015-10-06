@@ -96,6 +96,8 @@ class Localizacao extends CI_Controller {
 				$this->session->set_flashdata('ok', 'Editado efetuado com sucesso!');
 				redirect('localizacao/listarLocalizacao');
 			}
+		}else{
+			$this->listarLocalizacao();
 		}
 
 	}

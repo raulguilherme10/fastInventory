@@ -19,7 +19,7 @@
 		<div class="col-md-3">
 			<div class="form-group">
 		        <label class="control-label" for="serie">Série</label>
-		        <input class="form-control" name="serie" id="serie" placeholder="Número de série." type="text">
+		        <input class="form-control" name="serie" id="serie" placeholder="Número de série." type="number">
     		</div>
 		</div>
 	</div>

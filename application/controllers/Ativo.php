@@ -53,10 +53,10 @@ class Ativo extends CI_Controller {
 				$this->ativo->create($data, 1);
 				//passando uma mensagem de confirmacao pela session
 				$this->session->set_flashdata('ok', 'Cadastrado com sucesso!');
-				redirect('ativo/index');
+				redirect('ativo/listarEmpresas');
 			}else{
 				//passando uma mensagem de erro
-				$this->index();
+				$this->listarEmpresas();
 			}
 	}
 
@@ -94,6 +94,9 @@ class Ativo extends CI_Controller {
 	}
 
 	public function carregarProduto(){
+		//verificando a sessao
+		$this->verificarSessao();
+
 		//funcao para trazer os tipos de produto
 		$data['query'] = $this->ativo->listarTodosTipos();
 		$this->load->view('ativo/cadastrarProduto_view', $data);
@@ -101,6 +104,9 @@ class Ativo extends CI_Controller {
 	}
 
 	public function carregarNF(){
+		//verificando a sessao
+		$this->verificarSessao();
+
 		//funcao para trazer os tipos de produto
 		$data['query'] = $this->ativo->listarTodosEmpresas();
 		$this->load->view('ativo/cadastrarNotaFiscal_view', $data);
@@ -108,10 +114,69 @@ class Ativo extends CI_Controller {
 	}
 
 	public function carregarItem(){
+		//verificando a sessao
+		$this->verificarSessao();
+
 		//funcao para trazer os tipos de produto
 		$data['query'] = $this->ativo->listarTodosItens();
 		$this->load->view('ativo/cadastrarItem_view', $data);
 		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/cadastrarItem_view');
 	}
 
+	public function listarEmpresas(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//funcao para trazer todas as empresas
+		$data['query'] = $this->ativo->listarTodosEmpresas();
+		$this->load->view('ativo/listarEmpresas_view', $data);
+		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/listarEmpresas_view');
+	}
+
+	public function atualizarEmpresa($cnpj=NULL){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//recebendo o cnpj pela url
+		//chamando a funcao que veridica no banco de dados o cnpj
+		$cnpj .= '/';
+		$cnpj .= $this->uri->segment(4);
+		$data['query'] = $this->ativo->atualizarEmpresa($cnpj);
+
+
+		$this->load->view('ativo/editarEmpresa_view.php', $data);
+		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/editarEmpresa_view.php');
+
+	}
+
+	public function editarEmpresa(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//fazendo a validacao do formulario
+		$this->form_validation->set_rules('nf', 'NOME FANTASIA', 'required|max_length[50]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 50 caracteres.'));
+		$this->form_validation->set_rules('rz', 'RAZÃO SOCIAL', 'max_length[100]', array(
+										'max_length' => 'O campo %s excedeu o limite de 100 caracteres.'));
+
+			if($this->form_validation->run() == TRUE){
+				$cnpj = $this->input->post('cnpj');
+				$data['emp_nomeFantasia'] = $this->input->post('nf');
+				$data['emp_razaoSocial'] = $this->input->post('rs');
+
+				$retorno = $this->ativo->editarEmpresa($cnpj, $data);
+
+					if($retorno == 1){
+						$this->session->set_flashdata('ok', 'Editado com sucesso');
+						redirect('ativo/listarEmpresas');
+					}
+
+
+			}else{
+				$this->listarEmpresas();
+			}
+
+
+	}
 }

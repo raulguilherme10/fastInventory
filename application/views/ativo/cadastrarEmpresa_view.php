@@ -18,17 +18,9 @@
 
 
 
-<form action="<?php echo base_url('ativo/cadastrarEmpresa'); ?>" method="post">
+<form action="<?php echo base_url('ativo/editarEmpresa'); ?>" method="post">
 
-    <div class="form-group">
-        <label class="control-label" for="cnpj">CNPJ</label>
-        <input class="form-control" name="cnpj" id="cnpj" placeholder="Digite o cnpj da empresa" autofocus type="text" required />
-    </div>
-
-    <div class="form-group">
-        <label class="control-label" for="ie">Inscrição Estadual</label>
-        <input class="form-control" name="ie" id="ie" placeholder="Digite a inscrição estadual da empresa" type="text" required />
-    </div>
+    <input type="hidden" id="cnpj" name="cnpj" value="<?php echo $localizacao[0]->loc_id;?>" />
 
     <div class="form-group">
         <label class="control-label" for="nf">Nome Fantasia</label>
