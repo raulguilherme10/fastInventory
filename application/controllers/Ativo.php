@@ -184,10 +184,24 @@ class Ativo extends CI_Controller {
 		//verificando a sessao
 		$this->verificarSessao();
 		//recebendo o valor do cnpj pela url
-		//chamando a funçao de trocar status
+		//chamando a funçao de verificar o status da empresa
 		$cnpj .= '/';
 		$cnpj .= $this->uri->segment(4);
-		$this->ativo->trocarStatusEmpresa($cnpj);
+		$data['emp_cnpj'] = $cnpj;
+		$staus = $this->ativo->verificarStatus($cnpj, 1);
+
+			foreach($status->result() as $res){
+				$x = $res->emp_status;
+			}
+
+				if($x == 0){
+					$data['emp_status'] = 1;
+					$retorno = $this->ativo->trocarStatus($data, 1);
+				}else{
+					$data['emp_status'] = 0;
+					$retorno = $this->ativo->trocarStatus($data, 1);
+				}
+
 
 
 
