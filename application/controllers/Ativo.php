@@ -179,4 +179,17 @@ class Ativo extends CI_Controller {
 
 
 	}
+
+	public function trocarStatusEmpresa($cnpj=NULL){
+		//verificando a sessao
+		$this->verificarSessao();
+		//recebendo o valor do cnpj pela url
+		//chamando a funçao de trocar status
+		$cnpj .= '/';
+		$cnpj .= $this->uri->segment(4);
+		$this->ativo->trocarStatusEmpresa($cnpj);
+
+
+
+	}
 }
