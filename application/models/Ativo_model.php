@@ -50,27 +50,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 		}
 
-		public function trocarStatus($data=NULL, $origem=NULL){
-			if($cnpj != NULL){
-				switch($origem){
-					case 1:
-						$this->db->where('emp_cnpj', $id);
-						$this->db->update
+		public function trocarStatus($cnpj=NULL, $data=NULL, $origem){
+
+			switch ($origem) {
+				case 1:
+					$this->db->where('emp_cnpj', $cnpj);
+					$this->db->update('tbl_empresa', $data);
 					break;
-				}
+
 			}
+			
 
 		}
 
-		public function verificarStatus($id=NULL, $origem=NULL){
+		public function verificarStatus($cnpj=NULL, $origem=NULL){
 
 			if($origem != NULL){
 				switch($origem){
 					case 1:
 						//verificar o status da empresa
-						$this->db->where('emp_status', $data['emp_cnpj']);
-						$this->db->get('tbl_empresa', $data);
-						return 1;
+						$this->db->where('emp_cnpj', $cnpj);
+						return $this->db->get('tbl_empresa');
 					break;
 				}
 			}
