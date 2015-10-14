@@ -75,7 +75,7 @@
                             <a href="<?php echo base_url('usuario'); ?>"> <i class="glyphicon glyphicon-user"></i> Usuário</a>
                         </li>
                         <li class="<?php if($this->uri->segment(1)=="ativo"){echo "active";}?>">
-                            <a href="<?php echo base_url('ativo'); ?>"> <i class="glyphicon glyphicon-asterisk"></i> Ativo</a>
+                            <a href="<?php echo base_url('ativo/listarEmpresas'); ?>"> <i class="glyphicon glyphicon-asterisk"></i> Ativo</a>
                         </li>
                         <li class="<?php if($this->uri->segment(1)=="localizacao"){echo "active";}?>">
                             <a href="<?php echo base_url('localizacao/cadastrarLocalizacao'); ?>"><i class="glyphicon glyphicon-remove-circle"></i> Localização</a>

@@ -31,6 +31,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			return $this->db->get('tbl_empresa');
 		}
 
+		public function listarTodosProdutos(){
+			return $this->db->get('tbl_produto');
+		}
+
 		public function listarTodosItens(){
 			$this->db->order_by('ntf_numNota');
 			return $this->db->get('tbl_notaFiscal');
@@ -50,12 +54,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 		}
 
-		public function trocarStatus($cnpj=NULL, $data=NULL, $origem){
+		public function trocarStatus($id=NULL, $data=NULL, $origem){
 
 			switch ($origem) {
 				case 1:
-					$this->db->where('emp_cnpj', $cnpj);
+					$this->db->where('emp_cnpj', $id);
 					$this->db->update('tbl_empresa', $data);
+					break;
+
+				case 2:
+					$this->db->where('pro_id', $id);
+					$this->db->update('tbl_produto', $data);
 					break;
 
 			}
@@ -63,15 +72,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 		}
 
-		public function verificarStatus($cnpj=NULL, $origem=NULL){
+		public function verificarStatus($id=NULL, $origem=NULL){
 
 			if($origem != NULL){
 				switch($origem){
 					case 1:
 						//verificar o status da empresa
-						$this->db->where('emp_cnpj', $cnpj);
+						$this->db->where('emp_cnpj', $id);
 						return $this->db->get('tbl_empresa');
-					break;
+						break;
+
+					case 2:
+						$this->db->where('pro_id', $id);
+						return $this->db->get('tbl_produto');
+						break;
+
 				}
 			}
 		}

@@ -6,13 +6,21 @@
         </div>
     <?php
     }else{
-        if(validation_errors() != NULL){
+    	if($this->session->flashdata('erro')){
+    	?>
+	        <div class="alert alert-danger" role="alert">
+	            <?php echo $this->session->flashdata('erro')?>
+	        </div>
+    	<?php
+    	}else{
+    		if(validation_errors() != NULL){
             ?>
-            <div class="alert alert-danger" role="alert">
-                <?php echo validation_errors(); ?>
-            </div>
+	            <div class="alert alert-danger" role="alert">
+	                <?php echo validation_errors(); ?>
+	            </div>
             <?php
-        }
+        	}
+    	}
     }
 ?>
 
