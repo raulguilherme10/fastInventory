@@ -98,7 +98,7 @@
             <div class="container">
                 <div class="row">
                     
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <!-- aqui vai ser o menu lateral-->
                         <?php echo $template['partials']['lateral']; ?>
                     </div>
@@ -107,7 +107,7 @@
                         <br />
                     </div>
 
-                    <div class="col-md-7 text-left">
+                    <div class="col-md-8 text-left">
                        <!-- aqui vai ser o conteudo-->
                        <?php echo $template['body']; ?>
                     </div>

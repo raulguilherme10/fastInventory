@@ -31,7 +31,7 @@
 	</div>
 
 	<div class="col-md-2">
-		<a href="#" class="btn btn-success btn-block btn-lg"  data-placement="bottom" title="Cadastrar Empresa" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-plus"></i></a>
+		<a href="#" class="btn btn-success btn-lg"  data-placement="bottom" title="Cadastrar Produto" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-plus"></i></a>
 	</div>
 </div>
 
@@ -39,20 +39,21 @@
 <div class="row tablist">
 	<table class="table table-hover" id="myTable">
 		<thead>
-			<td>ID</td>
 			<td>Marca</td>
 			<td>Tipo</td>
+			<td>Status</td>
 			<td></td>
 		</thead>
 		<tbody>
 			<?php foreach($query->result() as $res){?>
 			<tr>
-				<td><?php echo $res->pro_id;?></td>
 				<td><?php echo $res->pro_marca;?></td>
-				<td><?php echo $res->pro_idTipo; ?></td>
+				<td><?php echo $res->tip_nome; ?></td>
+				<td><?php echo $res->pro_status==1?'Ativado':'Desativado'; ?></td>
 				<td>
-					<a  class="btn btn-info btn-group" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="glyphicon glyphicon-pencil"></i></a>
+					<a  href="<?php echo base_url('ativo/atualizarProduto/'.$res->pro_id);?>" class="btn btn-info btn-group" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="glyphicon glyphicon-pencil"></i></a>
 					<a  href="<?php echo base_url('ativo/trocarStatusProduto/'.$res->pro_id);?>" class="btn btn btn-default btn-group"  onclick="return confirm('Deseja trocar o status da empresa?');" data-toggle="tooltip" data-placement="bottom" title="Trocar Status"><i class="glyphicon glyphicon-edit"></i></a>
+				</td>	
 			</tr>
 			<?php }?>
 		</tbody>

@@ -32,7 +32,7 @@
 	</div>
 
 	<div class="col-md-2">
-		<a href="#" class="btn btn-success btn-block btn-lg"  data-placement="bottom" title="Cadastrar Empresa" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-plus"></i></a>
+		<a href="#" class="btn btn-success btn-lg"  data-placement="bottom" title="Cadastrar Empresa" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-plus"></i></a>
 	</div>
 </div>
 
@@ -42,7 +42,7 @@
 		<thead>
 			<td>CNPJ</td>
 			<td>Nome Fantasia</td>
-			<td>Razão Social</td>
+			<td>Status</td>
 			<td></td>
 		</thead>
 		<tbody>
@@ -50,7 +50,7 @@
 			<tr>
 				<td><?php echo $res->emp_cnpj;?></td>
 				<td><?php echo $res->emp_nomeFantasia;?></td>
-				<td><?php echo $res->emp_razaoSocial; ?></td>
+				<td><?php echo $res->emp_status==1?'Ativado':'Desativado'; ?></td>
 				<td>
 					<a href="<?php echo base_url('ativo/atualizarEmpresa/'.$res->emp_cnpj);?>" class="btn btn-info btn-group" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="glyphicon glyphicon-pencil"></i></a>
 					<a href="<?php echo base_url('ativo/trocarStatusEmpresa/'.$res->emp_cnpj);?>" class="btn btn btn-default btn-group"  onclick="return confirm('Deseja trocar o status da empresa?');" data-toggle="tooltip" data-placement="bottom" title="Trocar Status"><i class="glyphicon glyphicon-edit"></i></a>
@@ -83,7 +83,7 @@
 
 		    <div class="form-group">
 		        <label class="control-label" for="ie">Inscrição Estadual</label>
-		        <input class="form-control" name="ie" id="ie" placeholder="Digite a inscrição estadual da empresa" type="text" required />
+		        <input class="form-control" name="ie" id="ie" placeholder="Digite a inscrição estadual da empresa" type="text"/>
 		    </div>
 
 		    <div class="form-group">

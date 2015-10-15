@@ -18,6 +18,38 @@ class Ativo extends CI_Controller {
 		}
 	}
 
+	public function listarEmpresas(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//funcao para trazer todas as empresas
+		$data['query'] = $this->ativo->listarTodasEmpresas();
+		$this->load->view('ativo/listarEmpresas_view', $data);
+		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/listarEmpresas_view');
+	}
+
+	public function listarProdutos(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		$data['tipos'] = $this->ativo->listarTodosTipos();
+		$data['query'] = $this->ativo->listarTodosProdutos();
+		$this->load->view('ativo/listarProdutos_view.php', $data);
+		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/listarProdutos_view.php');
+
+	}
+
+	public function listarNF(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//função para trazer todas NF
+		$data['empresa'] = $this->ativo->listarTodasEmpresas();
+		$data['query'] = $this->ativo->listarTodasNF();
+		$this->load->view('ativo/listarNF_view.php', $data);
+		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/listarNF_view.php');
+	}
+
 
 	public function cadastrarEmpresa(){
 		//verificando a sessao
@@ -29,11 +61,10 @@ class Ativo extends CI_Controller {
 										'min_length' => 'O mínimo no campo %s é 16 caracteres.',
 										'max_length' => 'O campo %s excedeu o limite de 16 caracteres.',
 										'is_unique' => '%s já cadastrado'));
-		$this->form_validation->set_rules('ie', 'INSCRIÇÃO ESTADUAL', 'required|min_length[11]|max_length[11]|is_unique[tbl_empresa.emp_ie]', array(
+		$this->form_validation->set_rules('ie', 'INSCRIÇÃO ESTADUAL', 'required|min_length[11]|max_length[11]', array(
 										'required' => 'O campo %s é obrigatório.',
 										'min_length' => 'O mínimo no campo %s é 11 caracteres.',
-										'max_length' => 'O campo %s excedeu o limite de 11 caracteres.',
-										'is_unique' => '%s já cadastrado'));
+										'max_length' => 'O campo %s excedeu o limite de 11 caracteres.'));
 		$this->form_validation->set_rules('nf', 'NOME FANTASIA', 'required|max_length[50]', array(
 										'required' => 'O campo %s é obrigatório.',
 										'max_length' => 'O campo %s excedeu o limite de 50 caracteres.'));
@@ -47,7 +78,7 @@ class Ativo extends CI_Controller {
 				$data['emp_ie'] = $this->input->post('ie');
 				$data['emp_nomeFantasia'] = $this->input->post('nf');
 				$data['emp_razaoSocial'] = $this->input->post('rs');
-				$data['emp_status'] = 1;
+				$data['emp_status'] = "1";
 
 				//passando os valores para o model
 				$this->ativo->create($data, 1);
@@ -93,34 +124,51 @@ class Ativo extends CI_Controller {
 
 	}
 
-	public function carregarNF(){
+	public function cadastrarNF(){
 		//verificando a sessao
 		$this->verificarSessao();
 
-		//funcao para trazer os tipos de produto
-		$data['query'] = $this->ativo->listarTodosEmpresas();
-		$this->load->view('ativo/cadastrarNotaFiscal_view', $data);
-		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/cadastrarNotaFiscal_view');
-	}
+		//validação do formulário
+		$this->form_validation->set_rules('numNota', 'NÚMERO DA NOTA', 'required|max_length[12]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 12 caracteres.'));
+		$this->form_validation->set_rules('serie', 'SÉRIE', 'required|max_length[2]|is_natural', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 2 caracteres',
+										'is_natural' => 'Tipo de caractere(s) inválido(s).'));
+		$this->form_validation->set_rules('natureza', 'NATUREZA DA OPERAÇÃO', 'required|max_length[100]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 100 caracteres.'));
+		$this->form_validation->set_rules('total', 'TOTAL', 'required|max_length[12]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 12 caracteres.'));
+		$this->form_validation->set_rules('dataEmissao', 'DATA DE EMISSÃO', 'required|max_length[10]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 10 caracteres.'));
+		$this->form_validation->set_rules('dataVencimento', 'DATA DE VENCIMENTO', 'required|max_length[10]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 10 caracteres.'));
+		
+			//verificando se passou pela validação, se passou armazena os valores em um vetor
+			if($this->form_validation->run() == TRUE){
+				$data['ntf_cnpjEmp'] = $this->input->post('empresa');
+				$data['ntf_numNota'] = $this->input->post('numNota');
+				$data['ntf_serie'] = $this->input->post('serie');
+				$data['ntf_naturezaOpe'] = $this->input->post('natureza');
+				$data['ntf_total'] = $this->input->post('total');
+				$data['ntf_dataEmissao'] = $this->input->post('dataEmissao');
+				$data['ntf_dataVencimento'] = $this->input->post('dataVencimento');
+				$data['ntf_status'] = 1;
 
-	public function carregarItem(){
-		//verificando a sessao
-		$this->verificarSessao();
+				//passado o array para a funcao que insere no bd
+				$this->ativo->create($data, 3);
+				//passando uma mensagem de confirmaçao
+				$this->session->set_flashdata('ok', 'Cadastrado com sucesso!');
+				redirect('ativo/listarNF');
 
-		//funcao para trazer os tipos de produto
-		$data['query'] = $this->ativo->listarTodosItens();
-		$this->load->view('ativo/cadastrarItem_view', $data);
-		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/cadastrarItem_view');
-	}
-
-	public function listarEmpresas(){
-		//verificando a sessao
-		$this->verificarSessao();
-
-		//funcao para trazer todas as empresas
-		$data['query'] = $this->ativo->listarTodosEmpresas();
-		$this->load->view('ativo/listarEmpresas_view', $data);
-		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/listarEmpresas_view');
+			}else{
+				$this->listarNF();
+			}
 	}
 
 	public function atualizarEmpresa($cnpj=NULL){
@@ -154,8 +202,9 @@ class Ativo extends CI_Controller {
 				$cnpj = $this->input->post('cnpj');
 				$data['emp_nomeFantasia'] = $this->input->post('nf');
 				$data['emp_razaoSocial'] = $this->input->post('rs');
+				
 
-				$retorno = $this->ativo->editarEmpresa($cnpj, $data);
+					$retorno = $this->ativo->editarEmpresa($cnpj, $data);
 
 					if($retorno == 1){
 						$this->session->set_flashdata('ok', 'Editado com sucesso');
@@ -208,16 +257,6 @@ class Ativo extends CI_Controller {
 				redirect('ativo/listarEmpresas');		
 	}
 
-	public function listarProdutos(){
-		//verificando a sessao
-		$this->verificarSessao();
-
-		$data['tipos'] = $this->ativo->listarTodosTipos();
-		$data['query'] = $this->ativo->listarTodosProdutos();
-		$this->load->view('ativo/listarProdutos_view.php', $data);
-		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/listarProdutos_view.php');
-
-	}
 
 	public function trocarStatusProduto($id){
 		//verificando a sessao
@@ -251,5 +290,75 @@ class Ativo extends CI_Controller {
 				}
 
 				redirect('ativo/listarProdutos');
+	}
+
+	public function atualizarProduto($id=NULL){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		$data['combo'] = $this->ativo->listarTodosTipos();
+		$dado = NULL;
+		$dado = $this->ativo->atualizarProduto($id);
+
+			if($dado != NULL){
+				$data['query'] = $dado;
+				$this->load->view('ativo/editarProduto_view.php', $data);
+				$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/editarProduto_view.php');
+			}else{
+				$this->session->set_flashdata('erro', 'Produto não encontrado');
+				redirect('ativo/listarProdutos');
+			}
+
+
+		
+
+	}
+
+	public function editarProduto(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//validacao do formulario
+		$this->form_validation->set_rules('marca', 'Marca', 'required|max_length[50]', array(
+										'marcar' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 50 caracteres.'));
+		$this->form_validation->set_rules('cor', 'COR', 'max_length[20]|alpha', array(
+										'max_length' => 'O campo %s excedeu o limite de 20 caracteres.',
+										'alpha' => 'Carateres inválidos no campo %s. '));
+		$this->form_validation->set_rules('descricao', 'DESCRIÇÃO', 'required|max_length[330]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 330 caracteres.'));
+
+			//verificando se os valores do relatorio passaram pela validação
+			if($this->form_validation->run() == TRUE){
+				$id = $this->input->post('id');
+
+				$data['pro_marca'] = $this->input->post('marca');
+				$data['pro_cor'] = $this->input->post('cor');
+				$data['pro_descricao'] = $this->input->post('descricao');
+				$data['pro_idTipo'] = $this->input->post('tipo');
+
+				$retorno = $this->ativo->pesquisarProduto($id);
+				$dado = NULL;
+
+					foreach($retorno->result() as $res){
+						$dado = $res->pro_id;
+					}
+
+						if($dado != NULL){
+							$retorno = $this->ativo->editarProduto($id, $data);
+							if($retorno == 1){
+								$this->session->set_flashdata('ok', 'Editado com sucesso!');
+							}
+						}else{
+							$this->session->set_flashdata('ok', 'Produto não encontrado');
+						}
+
+						redirect('ativo/listarProdutos');
+			}else{
+
+				$this->listarProdutos();
+			}
+
 	}
 }
