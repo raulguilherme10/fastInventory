@@ -54,8 +54,8 @@
 				<td><?php echo $res->ntf_numNota; ?></td>
 				<td><?php echo $res->ntf_status==1?'Ativado':'Desativado'; ?></td>
 				<td>
-					<a  class="btn btn-info btn-group" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="glyphicon glyphicon-pencil"></i></a>
-					<a  class="btn btn btn-default btn-group"  onclick="return confirm('Deseja trocar o status da empresa?');" data-toggle="tooltip" data-placement="bottom" title="Trocar Status"><i class="glyphicon glyphicon-edit"></i></a>
+					<a class="btn btn-info btn-group" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="glyphicon glyphicon-pencil"></i></a>
+					<a href="<?php echo base_url('ativo/trocarStatusNF/'.$res->ntf_id.'/'.$res->ntf_cnpjEmp);?>" class="btn btn btn-default btn-group"  onclick="return confirm('Deseja trocar o status da empresa?');" data-toggle="tooltip" data-placement="bottom" title="Trocar Status"><i class="glyphicon glyphicon-edit"></i></a>
 				</td>	
 			</tr>
 		<?php }?>
@@ -80,7 +80,7 @@
 	
 		<div class="form-group">
 	        <label class="control-label" for="empresa">Empresa</label>
-	        <select name="empresa" id="empresa" class="form-control" autofocus>
+	        <select name="empresa" id="empresa" class="form-control" autofocus required>
 	            <?php foreach($empresa->result() as $res) {?>
 	              <option value="<?php echo $res->emp_cnpj; ?>"><?php echo $res->emp_nomeFantasia;?></option>
 	            <?php } ?>

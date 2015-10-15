@@ -32,6 +32,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		}
 
 		public function listarTodasEmpresas(){
+			$this->db->order_by('emp_nomeFantasia');
+			return $this->db->get('tbl_empresa');
+		}
+
+		public function listarEmpresasCombo(){
 			$this->db->where('emp_status = 1');
 			$this->db->order_by('emp_nomeFantasia');
 			return $this->db->get('tbl_empresa');
@@ -93,6 +98,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					$this->db->update('tbl_produto', $data);
 					break;
 
+				case 3:
+					$this->db->where('ntf_id', $id['id']);
+					$this->db->where('ntf_cnpjEmp', $id['cnpj']);
+					$this->db->update('tbl_notaFiscal', $data);
+					break;
+
 			}
 			
 
@@ -112,7 +123,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						$this->db->where('pro_id', $id);
 						return $this->db->get('tbl_produto');
 						break;
-
+					case 3:
+						$this->db->where('ntf_id', $id['id']);
+						$this->db->where('ntf_cnpjEmp', $id['cnpj']);
+						return $this->db->get('tbl_notaFiscal');
+						break;
 				}
 			}
 		}

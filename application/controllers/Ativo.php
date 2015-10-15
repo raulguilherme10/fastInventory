@@ -44,7 +44,7 @@ class Ativo extends CI_Controller {
 		$this->verificarSessao();
 
 		//função para trazer todas NF
-		$data['empresa'] = $this->ativo->listarTodasEmpresas();
+		$data['empresa'] = $this->ativo->listarEmpresasCombo();
 		$data['query'] = $this->ativo->listarTodasNF();
 		$this->load->view('ativo/listarNF_view.php', $data);
 		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/listarNF_view.php');
@@ -171,6 +171,25 @@ class Ativo extends CI_Controller {
 			}
 	}
 
+	public function atualizarProduto($id=NULL){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		$data['combo'] = $this->ativo->listarTodosTipos();
+		$dado = NULL;
+		$dado = $this->ativo->atualizarProduto($id);
+
+			if($dado != NULL){
+				$data['query'] = $dado;
+				$this->load->view('ativo/editarProduto_view.php', $data);
+				$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/editarProduto_view.php');
+			}else{
+				$this->session->set_flashdata('erro', 'Produto não encontrado');
+				redirect('ativo/listarProdutos');
+			}
+
+	}
+
 	public function atualizarEmpresa($cnpj=NULL){
 		//verificando a sessao
 		$this->verificarSessao();
@@ -184,6 +203,54 @@ class Ativo extends CI_Controller {
 
 		$this->load->view('ativo/editarEmpresa_view.php', $data);
 		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/editarEmpresa_view.php');
+
+	}
+
+	public function editarProduto(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//validacao do formulario
+		$this->form_validation->set_rules('marca', 'Marca', 'required|max_length[50]', array(
+										'marcar' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 50 caracteres.'));
+		$this->form_validation->set_rules('cor', 'COR', 'max_length[20]|alpha', array(
+										'max_length' => 'O campo %s excedeu o limite de 20 caracteres.',
+										'alpha' => 'Carateres inválidos no campo %s. '));
+		$this->form_validation->set_rules('descricao', 'DESCRIÇÃO', 'required|max_length[330]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 330 caracteres.'));
+
+			//verificando se os valores do relatorio passaram pela validação
+			if($this->form_validation->run() == TRUE){
+				$id = $this->input->post('id');
+
+				$data['pro_marca'] = $this->input->post('marca');
+				$data['pro_cor'] = $this->input->post('cor');
+				$data['pro_descricao'] = $this->input->post('descricao');
+				$data['pro_idTipo'] = $this->input->post('tipo');
+
+				$retorno = $this->ativo->pesquisarProduto($id);
+				$dado = NULL;
+
+					foreach($retorno->result() as $res){
+						$dado = $res->pro_id;
+					}
+
+						if($dado != NULL){
+							$retorno = $this->ativo->editarProduto($id, $data);
+							if($retorno == 1){
+								$this->session->set_flashdata('ok', 'Editado com sucesso!');
+							}
+						}else{
+							$this->session->set_flashdata('ok', 'Produto não encontrado');
+						}
+
+						redirect('ativo/listarProdutos');
+			}else{
+
+				$this->listarProdutos();
+			}
 
 	}
 
@@ -292,73 +359,46 @@ class Ativo extends CI_Controller {
 				redirect('ativo/listarProdutos');
 	}
 
-	public function atualizarProduto($id=NULL){
+	public function trocarStatusNF($id=NULL, $cnpj=NULL){
 		//verificando a sessao
 		$this->verificarSessao();
 
-		$data['combo'] = $this->ativo->listarTodosTipos();
+		//iniciando a variavel
+		//recebendo o valor do cnpj e id pela url
+		//chamando a funçao de verificar o status da empresa
 		$dado = NULL;
-		$dado = $this->ativo->atualizarProduto($id);
+		$cnpj .= '/';
+		$cnpj .= $this->uri->segment(5);
 
-			if($dado != NULL){
-				$data['query'] = $dado;
-				$this->load->view('ativo/editarProduto_view.php', $data);
-				$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/editarProduto_view.php');
-			}else{
-				$this->session->set_flashdata('erro', 'Produto não encontrado');
-				redirect('ativo/listarProdutos');
+		$dados['id'] = $id;
+		$dados['cnpj'] = $cnpj;
+		$retorno = $this->ativo->verificarStatus($dados, 3);
+
+			foreach($retorno->result() as $res){
+				$status = $res->ntf_status;
 			}
 
-
-		
-
-	}
-
-	public function editarProduto(){
-		//verificando a sessao
-		$this->verificarSessao();
-
-		//validacao do formulario
-		$this->form_validation->set_rules('marca', 'Marca', 'required|max_length[50]', array(
-										'marcar' => 'O campo %s é obrigatório.',
-										'max_length' => 'O campo %s excedeu o limite de 50 caracteres.'));
-		$this->form_validation->set_rules('cor', 'COR', 'max_length[20]|alpha', array(
-										'max_length' => 'O campo %s excedeu o limite de 20 caracteres.',
-										'alpha' => 'Carateres inválidos no campo %s. '));
-		$this->form_validation->set_rules('descricao', 'DESCRIÇÃO', 'required|max_length[330]', array(
-										'required' => 'O campo %s é obrigatório.',
-										'max_length' => 'O campo %s excedeu o limite de 330 caracteres.'));
-
-			//verificando se os valores do relatorio passaram pela validação
-			if($this->form_validation->run() == TRUE){
-				$id = $this->input->post('id');
-
-				$data['pro_marca'] = $this->input->post('marca');
-				$data['pro_cor'] = $this->input->post('cor');
-				$data['pro_descricao'] = $this->input->post('descricao');
-				$data['pro_idTipo'] = $this->input->post('tipo');
-
-				$retorno = $this->ativo->pesquisarProduto($id);
-				$dado = NULL;
-
-					foreach($retorno->result() as $res){
-						$dado = $res->pro_id;
-					}
-
-						if($dado != NULL){
-							$retorno = $this->ativo->editarProduto($id, $data);
-							if($retorno == 1){
-								$this->session->set_flashdata('ok', 'Editado com sucesso!');
-							}
-						}else{
-							$this->session->set_flashdata('ok', 'Produto não encontrado');
+				if($status != NULL){
+					if($status == 1){
+						$data['ntf_status'] = 0;
+						$this->ativo->trocarStatus($dados, $data, 3);
+						$this->session->set_flashdata('ok', 'Status alterado com sucesso!');
+					}else{
+						if($status == 0){
+							$data['ntf_status'] = 1;
+							$this->ativo->trocarStatus($dados, $data, 3);
+							$this->session->set_flashdata('ok', 'Status alterado com sucesso!');
 						}
+					}
+				}else{
+					$this->session->set_flashdata('erro', 'Nota Fiscal não encontrada!');
+				}
 
-						redirect('ativo/listarProdutos');
-			}else{
-
-				$this->listarProdutos();
-			}
+				redirect('ativo/listarNF');
 
 	}
+
+	
+
+	
 }
