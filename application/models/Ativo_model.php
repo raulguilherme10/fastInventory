@@ -67,6 +67,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			return $this->db->get('tbl_produto')->result();
 		}
 
+		public function atualizarNF($id=NULL, $cnpj=NULL){
+			$this->db->where('ntf_id', $id);
+			$this->db->where('ntf_cnpjEmp', $cnpj);
+			return $this->db->get('tbl_notaFiscal')->result();
+		}
+
 		public function editarEmpresa($cnpj=NULL, $data=NULL){
 			if($cnpj != NULL){
 				$this->db->where('emp_cnpj', $cnpj);
@@ -83,6 +89,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				return 1;
 			}
 
+		}
+
+		public function editarNF($id=NULL, $cnpj=NULL, $data=NULL){
+			if($id != NULL && $cnpj != NULL){
+				$this->db->where('ntf_id', $id);
+				$this->db->where('ntf_cnpjEmp', $cnpj);
+				$this->db->update('tbl_notaFiscal', $data);
+				return 1;
+
+			}else{
+				return 0;
+			}
 		}
 
 		public function trocarStatus($id=NULL, $data=NULL, $origem){

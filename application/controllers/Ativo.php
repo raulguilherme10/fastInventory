@@ -194,17 +194,49 @@ class Ativo extends CI_Controller {
 		//verificando a sessao
 		$this->verificarSessao();
 
+		//incializando uma variável
 		//recebendo o cnpj pela url
 		//chamando a funcao que veridica no banco de dados o cnpj
+		$dado = NULL;
 		$cnpj .= '/';
 		$cnpj .= $this->uri->segment(4);
-		$data['query'] = $this->ativo->atualizarEmpresa($cnpj);
+		$dado = $this->ativo->atualizarEmpresa($cnpj);
 
+			if($dado != NULL){
+				$data['query'] = $dado;
+				$this->load->view('ativo/editarEmpresa_view.php', $data);
+				$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/editarEmpresa_view.php');
 
-		$this->load->view('ativo/editarEmpresa_view.php', $data);
-		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/editarEmpresa_view.php');
+			}else{
+				$this->session->set_flashdata('erro', 'Empresa não encontrada!');
+				redirect('ativo/listarEmpresas');
+			}
 
 	}
+
+	public function atualizarNF($id=NULL, $cnpj=NULL){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//incializando uma variável
+		//recebendo o cnpj pela url
+		//chamando a funcao que veridica no banco de dados o cnpj e o id na tabela notaFiscal
+		$dado = NULL;
+		$cnpj .= '/';
+		$cnpj .= $this->uri->segment(5);
+		$dado = $this->ativo->atualizarNF($id, $cnpj);
+
+			if($dado != NULL){
+				$data['empresa'] = $this->ativo->listarEmpresasCombo();
+				$data['query'] = $dado;
+				$this->load->view('ativo/editarNF_view.php', $data);
+				$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/editarNF_view.php');
+	
+			}else{
+				$this->session->set_flashdata('erro', 'Nota Fiscal não encontrada!');
+				redirect('ativo/listarNF');
+			}
+		}
 
 	public function editarProduto(){
 		//verificando a sessao
@@ -284,6 +316,62 @@ class Ativo extends CI_Controller {
 			}
 
 
+	}
+
+	public function editarNF(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//validação do formulário
+		$this->form_validation->set_rules('numNota', 'NÚMERO DA NOTA', 'required|max_length[12]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 12 caracteres.'));
+		$this->form_validation->set_rules('serie', 'SÉRIE', 'required|max_length[2]|is_natural', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 2 caracteres',
+										'is_natural' => 'Tipo de caractere(s) inválido(s).'));
+		$this->form_validation->set_rules('natureza', 'NATUREZA DA OPERAÇÃO', 'required|max_length[100]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 100 caracteres.'));
+		$this->form_validation->set_rules('total', 'TOTAL', 'required|max_length[12]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 12 caracteres.'));
+		$this->form_validation->set_rules('dataEmissao', 'DATA DE EMISSÃO', 'required|max_length[10]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 10 caracteres.'));
+		$this->form_validation->set_rules('dataVencimento', 'DATA DE VENCIMENTO', 'required|max_length[10]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 10 caracteres.'));
+		
+
+			//verificando se passou pela validação, se passou armazena os valores em um vetor
+			if($this->form_validation->run() == TRUE){
+				$id = $this->input->post('id');
+				$cnpj = $this->input->post('cnpj');
+
+				$data['ntf_cnpjEmp'] = $this->input->post('empresa');
+				$data['ntf_numNota'] = $this->input->post('numNota');
+				$data['ntf_serie'] = $this->input->post('serie');
+				$data['ntf_naturezaOpe'] = $this->input->post('natureza');
+				$data['ntf_total'] = $this->input->post('total');
+				$data['ntf_dataEmissao'] = $this->input->post('dataEmissao');
+				$data['ntf_dataVencimento'] = $this->input->post('dataVencimento');
+
+				$retorno = $this->ativo->editarNF($id, $cnpj, $data);
+
+					if($retorno == 1){
+						$this->session->set_flashdata('ok', 'Editado com sucesso');
+						redirect('ativo/listarNF');
+					}else{
+						if($retorno == 0){
+							$this->session->set_flashdata('erro', 'Erro ao editar!');
+							redirect('ativo/listarNF');
+						}
+					}
+				
+			}else{
+				$this->listarNF();
+			}
 	}
 
 	public function trocarStatusEmpresa($cnpj=NULL){
