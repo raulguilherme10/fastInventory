@@ -49,7 +49,7 @@
 			<?php foreach($query->result() as $res){?>
 			<tr>
 				<td><?php echo $res->emp_cnpj;?></td>
-				<td><?php echo $res->emp_nomeFantasia;?></td>
+				<td><?php echo ellipsize($res->emp_nomeFantasia, 21) ;?></td>
 				<td><?php echo $res->emp_status==1?'Ativado':'Desativado'; ?></td>
 				<td>
 					<a href="<?php echo base_url('ativo/atualizarEmpresa/'.$res->emp_cnpj);?>" class="btn btn-info btn-group" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="glyphicon glyphicon-pencil"></i></a>

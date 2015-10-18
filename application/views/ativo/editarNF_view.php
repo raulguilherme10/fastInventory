@@ -29,7 +29,7 @@
     
     <div class="form-group">
         <label class="control-label" for="natureza">Natureza da operação</label>
-        <textarea class="form-control" name="natureza" id="natureza" placeholder="Digite a natureza da operação." type="text" rows="3"></textarea>
+        <textarea class="form-control" name="natureza" id="natureza" placeholder="Digite a natureza da operação." type="text" rows="3"><?php echo $query[0]->ntf_naturezaOpe;;?></textarea>
     </div>
 
     <div class="row">

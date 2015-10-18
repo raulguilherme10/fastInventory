@@ -18,6 +18,39 @@ class Ativo extends CI_Controller {
 		}
 	}
 
+	public function carregarItem($id=NULL, $cnpj=NULL){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//recebendo o valor do cnpj da empresa pela url
+		$dado = NULL;
+		$cnpj .= '/';
+		$cnpj .= $this->uri->segment(5);
+
+		$dado = $this->ativo->atualizarNF($id, $cnpj);
+
+			if($dado != NULL){
+
+				$data['numNota'] = $dado[0]->ntf_numNota;
+
+
+				//trazendo todos os tipos de produtos
+				//chamando a view e passando o array
+				$data['query'] = $this->ativo->listarTodosProdutos();
+				$data['id'] = $id;
+				$data['cnpj'] = $cnpj;
+				$this->load->view('ativo/adicionarItem_view', $data);
+				$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/adicionarItem_view');
+	
+			}else{
+				$this->session->set_flashdata('erro', 'Nota Fiscal não encontrada!');
+				redirect('ativo/listarNF');
+			}
+
+
+
+	}
+
 	public function listarEmpresas(){
 		//verificando a sessao
 		$this->verificarSessao();
@@ -48,6 +81,13 @@ class Ativo extends CI_Controller {
 		$data['query'] = $this->ativo->listarTodasNF();
 		$this->load->view('ativo/listarNF_view.php', $data);
 		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/listarNF_view.php');
+	}
+
+	public function listarItem(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/listarItem_view.php');
 	}
 
 
@@ -171,6 +211,77 @@ class Ativo extends CI_Controller {
 			}
 	}
 
+	public function cadastrarItem(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//validação do formulário
+		$this->form_validation->set_rules('quantidade', 'QUANTIDADE', 'required|max_length[7]|is_natural', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 7 caracteres',
+										'is_natural' => 'Tipo de caractere(s) inválido(s).'));
+
+		if($data['itm_quantidade'] > 0){
+			//verificando se passou pela validação, se passou armazena os valores em um vetor
+			if($this->form_validation->run() == TRUE){
+				//array para armazenar o novo item
+				$data['itm_idNTF'] = $this->input->post('id');;
+				$data['itm_cnpjNTF'] = $this->input->post('cnpj');;
+				$data['itm_idPro'] = $this->input->post('empresa');
+				$data['itm_quantidade'] = $this->input->post('quantidade');
+
+				
+					//pesquisar se existe o produto cadastrado na NF
+					$item = NULL;
+					$dados['cnpj'] = $data['itm_cnpjNTF'];
+					$dados['id'] = $data['itm_idNTF'];
+					$dados['Prod'] = $data['itm_idPro'];
+					$item = $this->ativo->pesquisarItem($dados);
+
+						if($item == NULL){
+							//passado o array para a funcao que insere no bd
+							$this->ativo->create($data, 4);
+							$this->session->set_flashdata('ok', 'Item inserido com sucesso!');
+
+								//criando o total de ativos de acordo com a qntd de itens
+								//pesquisando novamente o item
+								$dados['cnpj'] = $data['itm_cnpjNTF'];
+								$dados['id'] = $data['itm_idNTF'];
+								$dados['Prod'] = $data['itm_idPro'];
+								$item = $this->ativo->pesquisarItem($dados);
+
+									//criando os ativos de acordo com as qntds de itens
+									for($i = 0; $i < $data['itm_quantidade']; $i++){
+										//dados para criar os ativos
+										$ativo['atv_idITM'] = $item[0]->itm_id;
+										$ativo['atv_idNTF'] = $dados['id'];
+										$ativo['atv_cnpjNTF'] = $dados['cnpj'];
+										$ativo['atv_idPro'] = $dados['Prod'];
+										$ativo['atv_numPatr'] = '';
+										$ativo['atv_data'] = date('d/m/Y');
+										$ativo['atv_hora'] = date('H:i:s');
+										$ativo['atv_status'] = 1;
+
+										//função para inserir no bd
+										$this->ativo->create($ativo, 5);
+									}
+		
+										redirect('ativo/listarNF');
+
+						}else{
+							$this->session->set_flashdata('erro', 'Item já inserido na Nota Fiscal!');
+							redirect('ativo/listarNF');
+						}		
+			}else{
+				$this->listarNF();
+			}
+		}else{
+			$this->session->set_flashdata('erro', 'A QUANTIDADE tem que ser maior que zero!');
+			redirect('ativo/listarNF');
+		}	
+	}
+
+
 	public function atualizarProduto($id=NULL){
 		//verificando a sessao
 		$this->verificarSessao();
@@ -236,7 +347,7 @@ class Ativo extends CI_Controller {
 				$this->session->set_flashdata('erro', 'Nota Fiscal não encontrada!');
 				redirect('ativo/listarNF');
 			}
-		}
+	}
 
 	public function editarProduto(){
 		//verificando a sessao

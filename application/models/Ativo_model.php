@@ -21,6 +21,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						$this->db->insert('tbl_notaFiscal', $dados);
 						break;
 
+					case 4:
+						$this->db->insert('tbl_item', $dados);
+						break;
+
+					case 5:
+						$this->db->insert('tbl_ativo', $dados);
+						break;
+
 				}
 				
 			}
@@ -153,6 +161,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		public function pesquisarProduto($id = NULL){
 			$this->db->where('pro_id', $id);
 			return $this->db->get('tbl_produto');
+		}
+
+		public function pesquisarItem($dados=NULL){
+			$this->db->where('itm_idNTF', $dados['id']);
+			$this->db->where('itm_cnpjNTF', $dados['cnpj']);
+			$this->db->where('itm_idPro', $dados['Prod']);
+			return $this->db->get('tbl_item')->result();
 		}
 
 
