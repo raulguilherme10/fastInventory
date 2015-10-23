@@ -11,4 +11,7 @@
         <li class="<?php if($this->uri->segment(2)=="listarItem"){echo "active";}?>">
             <a href="<?php echo base_url('ativo/listarItem')?>">Item</a>
         </li>
+        <li class="<?php if($this->uri->segment(2)=="listarAtivos"){echo "active";}?>">
+            <a href="<?php echo base_url('ativo/listarItem')?>">Ativo</a>
+        </li>
  </ul>

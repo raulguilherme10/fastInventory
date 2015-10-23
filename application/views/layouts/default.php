@@ -10,17 +10,27 @@
 
 
         <!-- DataTables CSS -->
-        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.9/css/jquery.dataTables.css">
+        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.9/css/jquery.dataTables.css" />
+
+        <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+        
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/1.0.7/css/responsive.bootstrap.min.css" />
+        
+        <!-- Datable JS-->
+        <script type="text/javascript" src="https://cdn.datatables.net/responsive/1.0.7/js/dataTables.responsive.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.9/js/dataTables.bootstrap.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
   
         <!-- jQuery -->
         <script type="text/javascript" charset="utf8" src="<?php echo base_url('DataTables/jQuery-2.1.4/jquery-2.1.4.min.js'); ?>"></script>
         <script type="text/javascript" src="<?php echo base_url('assets/DataTables/datatables.min.js'); ?>"></script>
         <script type="text/javascript" src="<?php echo base_url('assets/Plugins/jquery.maskedinput.min.js'); ?>"></script>
+
         
        
               
 
-
+        <!-- CSS -->
         <link rel="stylesheet" href="<?php echo base_url('assets/css/theme.css'); ?> ">
         <link rel="stylesheet" href="<?php echo base_url('assets/css/bootstrap.css'); ?> ">
         <link rel="stylesheet" href="<?php echo base_url('assets/css/bootstrap-theme.css'); ?> ">
@@ -33,6 +43,7 @@
         <script>
         $(document).ready(function() {
             $('#myTable').DataTable( {
+                responsive: true,
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.9/i18n/Portuguese-Brasil.json"
                 }
@@ -78,7 +89,7 @@
                             <a href="<?php echo base_url('ativo/listarEmpresas'); ?>"> <i class="glyphicon glyphicon-asterisk"></i> Ativo</a>
                         </li>
                         <li class="<?php if($this->uri->segment(1)=="localizacao"){echo "active";}?>">
-                            <a href="<?php echo base_url('localizacao/cadastrarLocalizacao'); ?>"><i class="glyphicon glyphicon-remove-circle"></i> Localização</a>
+                            <a href="<?php echo base_url('localizacao'); ?>"><i class="glyphicon glyphicon-remove-circle"></i> Localização</a>
                         </li>
                         <li class="<?php if($this->uri->segment(1)=="relatorio"){echo "active";}?>">
                             <a href="<?php echo base_url('relatorio'); ?>"><i class="glyphicon glyphicon-file"></i> Relatório</a>

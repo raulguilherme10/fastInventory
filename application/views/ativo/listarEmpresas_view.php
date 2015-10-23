@@ -38,7 +38,7 @@
 
 
 <div class="row tablist">
-	<table class="table table-hover" id="myTable">
+	<table class="table table-hover dt-responsive nowrap" cellspacing="0" id="myTable">
 		<thead>
 			<td>CNPJ</td>
 			<td>Nome Fantasia</td>
@@ -50,9 +50,10 @@
 			<tr>
 				<td><?php echo $res->emp_cnpj;?></td>
 				<td><?php echo ellipsize($res->emp_nomeFantasia, 21) ;?></td>
-				<td><?php echo $res->emp_status==1?'Ativado':'Desativado'; ?></td>
+				<td><?php echo $res->emp_status==1?'Ativo':'Inativo'; ?></td>
 				<td>
 					<a href="<?php echo base_url('ativo/atualizarEmpresa/'.$res->emp_cnpj);?>" class="btn btn-info btn-group" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="glyphicon glyphicon-pencil"></i></a>
+					<a href="<?php echo base_url('ativo/excluirEmpresa/'.$res->emp_cnpj);?>" class="btn btn-danger btn-group"  onclick="return confirm('Deseja realmente excluir o usuário?');" data-toggle="tooltip" data-placement="bottom" title="Excluir"><i class="glyphicon glyphicon-trash"></i></a>
 					<a href="<?php echo base_url('ativo/trocarStatusEmpresa/'.$res->emp_cnpj);?>" class="btn btn btn-default btn-group"  onclick="return confirm('Deseja trocar o status da empresa?');" data-toggle="tooltip" data-placement="bottom" title="Trocar Status"><i class="glyphicon glyphicon-edit"></i></a>
 			</tr>
 			<?php }?>

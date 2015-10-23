@@ -35,11 +35,12 @@
     <div class="form-group">
         <label class="control-label" for="status">Status</label>
         <select name="loc_status" id="status" class="form-control">
-		  <option value="1" <?php echo $localizacao[0]->loc_status==1?'selected':'';?>>Ativado</option>
-		  <option value="0" <?php echo $localizacao[0]->loc_status==0?'selected':'';?>>Desativado</option>
+		  <option value="1" <?php echo $localizacao[0]->loc_status==1?'selected':'';?>>Ativo</option>
+		  <option value="0" <?php echo $localizacao[0]->loc_status==0?'selected':'';?>>Inativo</option>
 		</select>
     </div>
   
     <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"></i> Salvar</button>
+    <a type="submit" class="btn btn-default" href="<?php echo base_url('localizacao/listarLocalizacao');?>"><i class="glyphicon glyphicon-remove"></i> Cancelar</a>
 
   </form>

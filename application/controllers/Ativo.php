@@ -221,7 +221,7 @@ class Ativo extends CI_Controller {
 										'max_length' => 'O campo %s excedeu o limite de 7 caracteres',
 										'is_natural' => 'Tipo de caractere(s) inválido(s).'));
 
-		if($data['itm_quantidade'] > 0){
+		if($this->input->post('quantidade') > 0){
 			//verificando se passou pela validação, se passou armazena os valores em um vetor
 			if($this->form_validation->run() == TRUE){
 				//array para armazenar o novo item
@@ -460,7 +460,6 @@ class Ativo extends CI_Controller {
 				$id = $this->input->post('id');
 				$cnpj = $this->input->post('cnpj');
 
-				$data['ntf_cnpjEmp'] = $this->input->post('empresa');
 				$data['ntf_numNota'] = $this->input->post('numNota');
 				$data['ntf_serie'] = $this->input->post('serie');
 				$data['ntf_naturezaOpe'] = $this->input->post('natureza');
@@ -597,6 +596,30 @@ class Ativo extends CI_Controller {
 
 	}
 
+	public function excluirEmpresa($cnpj){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//incializando uma variável
+		//recebendo o cnpj pela url
+		//chamando a funcao que veridica no banco de dados o cnpj
+		$dado = NULL;
+		$cnpj .= '/';
+		$cnpj .= $this->uri->segment(4);
+
+		//verificar se a empresa esta vinculada a alguma nf
+		$dados['cnpj'] = $cnpj;
+		$retorno = $this->ativo->pesquisarNF($dados);
+			if($retorno != NULL){
+				$this->session->set_flashdata('erro', 'Erro ao excluir!');
+			}else{
+				$erro = $this->ativo->excluir($cnpj);
+				$this->session->set_flashdata('ok', 'Excluido com sucesso!');
+			}
+
+			redirect('ativo/listarEmpresas');
+			
+	}
 	
 
 	

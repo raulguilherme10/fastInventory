@@ -11,7 +11,7 @@
 
 
 <div class="row tablist">
-	<table class="table table-hover" id="myTable">
+	<table class="table table-hover dt-responsive nowrap" cellspacing="0" id="myTable">
 
 		<thead>
 			<td>CNPJ</td>

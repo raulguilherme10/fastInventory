@@ -23,7 +23,7 @@
 
     <div class="form-group">
         <label class="control-label" for="descricao">Descrição</label>
-        <textarea class="form-control" name="descricao" id="descricao" placeholder="Digite a descrição do produto." type="text" required rows="3"></textarea>
+        <textarea class="form-control" name="descricao" id="descricao" placeholder="Digite a descrição do produto." type="text" required rows="3"><?php echo $query[0]->pro_descricao;?></textarea>
     </div>
 	
 	<button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"></i> Salvar</button>

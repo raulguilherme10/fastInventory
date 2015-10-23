@@ -18,7 +18,7 @@ class Localizacao extends CI_Controller {
 	}
 
 	public function index(){
-		redirect('localizacao/cadastrarLocalizacao');
+		redirect('localizacao/listarLocalizacao');
 	}
 
 
@@ -38,9 +38,11 @@ class Localizacao extends CI_Controller {
 
 			redirect(base_url('localizacao/listarLocalizacao'));
 			
+		}else{
+			$this->listarLocalizacao();
 		}
 		
-		$this->template->set_partial('lateral', 'partials/lateral-localizacao')->set_layout('default')->build('localizacao/formCadLocalizacao');
+		
 	}
 
 	public function listarLocalizacao(){

@@ -170,5 +170,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			return $this->db->get('tbl_item')->result();
 		}
 
+		public function pesquisarNF($dados){
+			$this->db->where('ntf_cnpjEmp', $dados['cnpj']);
+			return $this->db->get('tbl_notaFiscal')->result();
+		}
+
+		public function excluir($cnpj=NULL){
+			$this->db->where('emp_cnpj', $cnpj);
+			$this->db->delete('tbl_empresa');
+		}
+
 
 	}

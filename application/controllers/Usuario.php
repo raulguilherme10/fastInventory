@@ -20,12 +20,7 @@ class Usuario extends CI_Controller {
 		//verificando a sessao
 		$this->verificarSessao();
 
-		//preenchendo o combobox
-		$data['tipo'] = $this->usu->listarGrupos();
-
-
-		$this->load->view('usuario/formCadUsu', $data);
-		$this->template->set_partial('lateral', 'partials/lateral-usuario')->set_layout('default')->build('usuario/formCadUsu');
+		$this->listarUsuario();
 	}
 
 	public function cadastrarUsuario(){
@@ -65,7 +60,7 @@ class Usuario extends CI_Controller {
 			redirect('usuario/listarUsuario');
 
 		}else{
-			$this->index();
+			$this->listarUsuario();
 		}
 		
 	}
@@ -76,20 +71,14 @@ class Usuario extends CI_Controller {
 		//pegando o id do usuario pela sessao
 		$id = $this->session->userdata('usuario');
 		//armazenando em um vetor todos os usuarios
+		//preenchendo o combobox
 		$data['query'] = $this->usu->listarTodos($id);
+		$data['tipo'] = $this->usu->listarGrupos();
 
 		$this->load->view('usuario/listarTodos_view', $data);
 		$this->template->set_partial('lateral', 'partials/lateral-usuario')->set_layout('default')->build('usuario/listarTodos_view');
 
 	}
-
-	public function editarUsuario(){
-
-		//verificando a sessao
-		$this->verificarSessao();
-
-	}
-
 
 	public function excluirUsuario($id=NULL){
 		//verificando a sessao

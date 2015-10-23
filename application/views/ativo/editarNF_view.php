@@ -2,15 +2,6 @@
     
     <input type="hidden" id="id" name="id" value="<?php echo $query[0]->ntf_id;?>" />
     <input type="hidden" id="cnpj" name="cnpj" value="<?php echo $query[0]->ntf_cnpjEmp;?>" />
-
-    <div class="form-group">
-        <label class="control-label" for="empresa">Empresa</label>
-        <select name="empresa" id="empresa" class="form-control" autofocus>
-            <?php foreach($empresa->result() as $res){ ?>
-              <option value="<?php echo $res->emp_cnpj; ?>" <?php echo $query[0]->ntf_cnpjEmp==$res->emp_cnpj?'selected':'';?> ><?php echo $res->emp_nomeFantasia;?></option>
-            <?php } ?>
-        </select>
-    </div>
 	
 	<div class="row">
 		<div class="col-md-9">

@@ -37,7 +37,7 @@
 
 
 <div class="row tablist">
-	<table class="table table-hover" id="myTable">
+	<table class="table table-hover dt-responsive nowrap" cellspacing="0" id="myTable">
 		<thead>
 			<td>Marca</td>
 			<td>Tipo</td>
@@ -47,9 +47,9 @@
 		<tbody>
 			<?php foreach($query->result() as $res){?>
 			<tr>
-				<td><?php echo $res->pro_marca;?></td>
-				<td><?php echo $res->tip_nome; ?></td>
-				<td><?php echo $res->pro_status==1?'Ativado':'Desativado'; ?></td>
+				<td><?php echo ellipsize($res->pro_marca, 13);?></td>
+				<td><?php echo ellipsize($res->tip_nome, 14); ?></td>
+				<td><?php echo $res->pro_status==1?'Ativo':'Inativo'; ?></td>
 				<td>
 					<a  href="<?php echo base_url('ativo/atualizarProduto/'.$res->pro_id);?>" class="btn btn-info btn-group" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="glyphicon glyphicon-pencil"></i></a>
 					<a  href="<?php echo base_url('ativo/trocarStatusProduto/'.$res->pro_id);?>" class="btn btn btn-default btn-group"  onclick="return confirm('Deseja trocar o status da empresa?');" data-toggle="tooltip" data-placement="bottom" title="Trocar Status"><i class="glyphicon glyphicon-edit"></i></a>
