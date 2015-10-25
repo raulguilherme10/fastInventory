@@ -31,12 +31,11 @@ class Ativo extends CI_Controller {
 
 			if($dado != NULL){
 
-				$data['numNota'] = $dado[0]->ntf_numNota;
-
-
 				//trazendo todos os tipos de produtos
+				//trzendo todos os itens da nota
 				//chamando a view e passando o array
 				$data['query'] = $this->ativo->listarTodosProdutos();
+				$data['item'] =$this->ativo->listarItemNF($id, $cnpj);
 				$data['id'] = $id;
 				$data['cnpj'] = $cnpj;
 				$this->load->view('ativo/adicionarItem_view', $data);
@@ -266,18 +265,18 @@ class Ativo extends CI_Controller {
 										$this->ativo->create($ativo, 5);
 									}
 		
-										redirect('ativo/listarNF');
+										redirect('ativo/carregarItem');
 
 						}else{
 							$this->session->set_flashdata('erro', 'Item já inserido na Nota Fiscal!');
-							redirect('ativo/listarNF');
+							redirect('ativo/carregarItem');
 						}		
 			}else{
-				$this->listarNF();
+				$this->carregarItem();
 			}
 		}else{
 			$this->session->set_flashdata('erro', 'A QUANTIDADE tem que ser maior que zero!');
-			redirect('ativo/listarNF');
+			redirect('ativo/carregarItem');
 		}	
 	}
 
@@ -606,19 +605,51 @@ class Ativo extends CI_Controller {
 		$dado = NULL;
 		$cnpj .= '/';
 		$cnpj .= $this->uri->segment(4);
+		$empresa = $this->ativo->pesquisarEmpresa($cnpj);
 
-		//verificar se a empresa esta vinculada a alguma nf
-		$dados['cnpj'] = $cnpj;
-		$retorno = $this->ativo->pesquisarNF($dados);
-			if($retorno != NULL){
-				$this->session->set_flashdata('erro', 'Erro ao excluir!');
+			if($empresa != NULL){
+				//verificar se a empresa esta vinculada a alguma nf
+				$dados['cnpj'] = $cnpj;
+				$retorno = $this->ativo->pesquisarNF($dados, 1);
+
+					if($retorno != NULL){
+						$this->session->set_flashdata('erro', 'Erro ao excluir!');
+					}else{
+						$erro = $this->ativo->excluir($cnpj, 1);
+						$this->session->set_flashdata('ok', 'Excluido com sucesso!');
+					}
 			}else{
-				$erro = $this->ativo->excluir($cnpj);
-				$this->session->set_flashdata('ok', 'Excluido com sucesso!');
+				$this->session->set_flashdata('erro', 'Empresa não encontrada');
 			}
+
+		
 
 			redirect('ativo/listarEmpresas');
 			
+	}
+
+	public function excluirNF($id){
+
+		//verificar se existe algum item vinculado a nf
+		$retorno = NULL;
+		$dados['idNF'] = $id;
+		$nf = $this->ativo->pesquisarNF($dados, 2);
+
+			if($nf != NULL){
+				$retorno = $this->ativo->verificar($dados, 1);
+
+					if($retorno != NULL){
+						$this->session->set_flashdata('erro', 'Erro ao excluir!');
+					}else{
+						$erro = $this->ativo->excluir($dados, 2);
+						$this->session->set_flashdata('ok', 'Excluido com sucesso!');
+					}
+			}else{
+				$this->session->set_flashdata('erro', 'Nota Fiscal não encontrada');
+			}
+			
+
+			redirect('ativo/listarNF');
 	}
 	
 

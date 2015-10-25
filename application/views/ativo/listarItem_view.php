@@ -39,7 +39,7 @@
 
 
 
-!-- Inicio Modal Cadastrar NF-->
+<!-- Inicio Modal Cadastrar NF-->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
   	<form action="<?php echo base_url('ativo/cadastrarNF'); ?>" method="post">

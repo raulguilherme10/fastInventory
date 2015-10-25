@@ -65,6 +65,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			return $this->db->get('tbl_notaFiscal');
 		}
 
+		public function listarItemNF($id=NULL, $cnpj=NULL){
+			$this->db->join('tbl_produto', 'pro_id = itm_idPro', 'inner');
+			$this->db->where('itm_idNTF', $id);
+			$this->db->where('itm_cnpjNTF', $cnpj);
+			return $this->db->get('tbl_item');
+		}
+
 		public function atualizarEmpresa($cnpj = NULL){
 			$this->db->where('emp_cnpj', $cnpj);
 			return $this->db->get('tbl_empresa')->result();
@@ -158,6 +165,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			}
 		}
 
+		public function verificar($dados=NULL, $origem=NULL){
+			if($origem != NULL){
+				switch($origem){
+					case 1:
+						$this->db->where('itm_idNTF', $dados['idNF']);
+						return $this->db->get('tbl_item')->result();
+						break;
+				}
+			}
+		}
+
+		public function pesquisarEmpresa($cnpj){
+			$this->db->where('emp_cnpj', $cnpj);
+			return $this->db->get('tbl_empresa')->result();
+		}
+
 		public function pesquisarProduto($id = NULL){
 			$this->db->where('pro_id', $id);
 			return $this->db->get('tbl_produto');
@@ -170,14 +193,37 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			return $this->db->get('tbl_item')->result();
 		}
 
-		public function pesquisarNF($dados){
-			$this->db->where('ntf_cnpjEmp', $dados['cnpj']);
-			return $this->db->get('tbl_notaFiscal')->result();
+		public function pesquisarNF($dados, $origem=NULL){
+			switch($origem){
+				
+				case 1:
+					$this->db->where('ntf_cnpjEmp', $dados['cnpj']);
+					return $this->db->get('tbl_notaFiscal')->result();
+					break;
+
+				case 2:
+					$this->db->where('ntf_id', $dados['idNF']);
+					return $this->db->get('tbl_notaFiscal')->result();
+					break;
+
+			}
+			
 		}
 
-		public function excluir($cnpj=NULL){
-			$this->db->where('emp_cnpj', $cnpj);
-			$this->db->delete('tbl_empresa');
+		public function excluir($id=NULL, $origem=NULL){
+
+			switch($origem){
+
+				case 1:
+					$this->db->where('emp_cnpj', $id);
+					$this->db->delete('tbl_empresa');
+					break;
+
+				case 2:
+					$this->db->where('ntf_id', $id['idNF']);
+					$this->db->delete('tbl_notaFiscal');
+					break;
+			}
 		}
 
 

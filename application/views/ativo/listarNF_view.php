@@ -54,10 +54,10 @@
 				<td><?php echo ellipsize($res->ntf_numNota, 12); ?></td>
 				<td><?php echo $res->ntf_status==1?'Ativo':'Inativo'; ?></td>
 				<td>
-					<a href="<?php echo base_url('ativo/atualizarNF/'.$res->ntf_id.'/'.$res->ntf_cnpjEmp);?>"class="btn btn-info btn-group" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="glyphicon glyphicon-pencil"></i></a>
-					<a class="btn btn-danger btn-group"  onclick="return confirm('Deseja realmente excluir a Nota Fiscal?');" data-toggle="tooltip" data-placement="bottom" title="Excluir"><i class="glyphicon glyphicon-trash"></i></a>
+					<a href="<?php echo base_url('ativo/atualizarNF/'.$res->ntf_id.'/'.$res->ntf_cnpjEmp);?>" class="btn btn-info btn-group" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="glyphicon glyphicon-pencil"></i></a>
+					<a href="<?php echo base_url('ativo/excluirNF/'.$res->ntf_id);?>" class="btn btn-danger btn-group"  onclick="return confirm('Deseja realmente excluir a Nota Fiscal?');" data-toggle="tooltip" data-placement="bottom" title="Excluir"><i class="glyphicon glyphicon-trash"></i></a>
 					<a href="<?php echo base_url('ativo/trocarStatusNF/'.$res->ntf_id.'/'.$res->ntf_cnpjEmp);?>" class="btn btn btn-default btn-group"  onclick="return confirm('Deseja trocar o status da Nota Fiscal?');" data-toggle="tooltip" data-placement="bottom" title="Trocar Status"><i class="glyphicon glyphicon-edit"></i></a>
-					<a href="<?php echo base_url('ativo/carregarItem/'.$res->ntf_id.'/'.$res->ntf_cnpjEmp);?>"class="btn btn-warning btn-group" data-toggle="tooltip" data-placement="bottom" title="Adicionar Item"><i class="glyphicon glyphicon-gift"></i></a>
+					<a href="<?php echo base_url('ativo/carregarItem/'.$res->ntf_id.'/'.$res->ntf_cnpjEmp);?>" class="btn btn-warning btn-group" data-toggle="tooltip" data-placement="bottom" title="Adicionar Item"><i class="glyphicon glyphicon-gift"></i></a>
 				</td>	
 			</tr>
 		<?php }?>

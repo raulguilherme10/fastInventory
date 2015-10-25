@@ -69,7 +69,7 @@
 
         
         <!-- Inicio Menu principal-->
-        <div class="navbar navbar-default navbar-inverse navbar-static-top">
+        <div class="navbar navbar-default navbar-inverse navbar-fixed-top menu">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse">
@@ -105,11 +105,11 @@
         
         
         <!-- Inicio Menu Lateral-->
-        <div class="section">
+        <div class="section conteudo">
             <div class="container">
                 <div class="row">
                     
-                    <div class="col-md-3">
+                    <div class="col-md-3 lateral">
                         <!-- aqui vai ser o menu lateral-->
                         <?php echo $template['partials']['lateral']; ?>
                     </div>
@@ -133,7 +133,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <h1>Fast Inventory</h1>
-                        <p>Copyright © 2015 | Raul Guilherme Pereira
+                        <p>Copyright © 2015 | Raul Guilherme Pereira | Sr. Nigga
                             <br>Telefone (11) 4022-3398
                             <br>Celular (11) 99988-2345</p>
                     </div>

@@ -1,3 +1,7 @@
+html, body{
+	height: 100%,
+}
+
 .rodape{
 	margin-top: 5%;
 }
@@ -7,3 +11,8 @@
 .tablist{
 	margin-top: 6%;
 }
+
+.menu{
+	position: fixed !important;
+}
+
