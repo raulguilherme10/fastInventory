@@ -110,7 +110,7 @@ class Localizacao extends CI_Controller {
 		//verificando a sessao
 		$this->verificarSessao();
 		
-		$query = $this->code->gerarQrCode($id, 'local');
+		$query = $this->code->gerarQrCode($id, 1);
 		if($query->result() != NULL){
 			foreach($query->result() as $sql){
 				header("Content-Type: image/png");
@@ -118,7 +118,7 @@ class Localizacao extends CI_Controller {
 
 				$params['data'] = "Nome : ".$sql->loc_nome. "\n";
 				$params['data'] .= "Pavimento: ".$sql->loc_pavimento."\n";
-				$params['data'] .= "Status: ".($sql->loc_status==1?'Ativado':'Desativado');
+				$params['data'] .= "Status: ".($sql->loc_status==1?'Ativo':'Inativo');
 				$this->ciqrcode->generate($params);
 
 				header('Content-Disposition: attachment; filename= "'.$sql->loc_id.''.$sql->loc_nome.''.$sql->loc_pavimento.''.$sql->loc_status.'.png"');

@@ -16,3 +16,10 @@ html, body{
 	position: fixed !important;
 }
 
+.conteudo{
+	margin-top: 50px;
+}
+
+.botao{
+	margin-top: 3%;
+}

@@ -79,8 +79,7 @@
                 <td><?php echo $res->pro_idTipo; ?></td>
                 <td><?php echo $res->itm_quantidade; ?></td>
                 <td>
-                    <a class="btn btn-info btn-group" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="glyphicon glyphicon-pencil"></i></a>
-                    <a class="btn btn btn-default btn-group"  onclick="return confirm('Deseja trocar o status da Nota Fiscal?');" data-toggle="tooltip" data-placement="bottom" title="Trocar Status"><i class="glyphicon glyphicon-edit"></i></a>
+                    <a href="<?php echo base_url('ativo/excluirItem/'.$res->itm_id);?>" class="btn btn-danger btn-group"  onclick="return confirm('Deseja realmente excluir o item?');" data-toggle="tooltip" data-placement="bottom" title="Excluir"><i class="glyphicon glyphicon-trash"></i></a>
                 </td>   
             </tr>
         <?php }?>

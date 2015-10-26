@@ -118,7 +118,7 @@
                         <br />
                     </div>
 
-                    <div class="col-md-8 text-left">
+                    <div class="col-md-8 text-left arquivos">
                        <!-- aqui vai ser o conteudo-->
                        <?php echo $template['body']; ?>
                     </div>

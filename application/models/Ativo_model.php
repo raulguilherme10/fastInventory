@@ -72,6 +72,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			return $this->db->get('tbl_item');
 		}
 
+		public function listarTodosAtivos(){
+			$this->db->join('tbl_notaFiscal', 'ntf_id = atv_idNTF', 'inner');
+			$this->db->join('tbl_local', 'loc_id = 	atv_local', 'inner');
+			return $this->db->get('tbl_ativo');
+		}
+
 		public function atualizarEmpresa($cnpj = NULL){
 			$this->db->where('emp_cnpj', $cnpj);
 			return $this->db->get('tbl_empresa')->result();
@@ -186,11 +192,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			return $this->db->get('tbl_produto');
 		}
 
-		public function pesquisarItem($dados=NULL){
-			$this->db->where('itm_idNTF', $dados['id']);
-			$this->db->where('itm_cnpjNTF', $dados['cnpj']);
-			$this->db->where('itm_idPro', $dados['Prod']);
-			return $this->db->get('tbl_item')->result();
+		public function pesquisarItem($dados=NULL, $origem=NULL){
+			switch($origem){
+				case 1:
+					$this->db->where('itm_idNTF', $dados['id']);
+					$this->db->where('itm_cnpjNTF', $dados['cnpj']);
+					$this->db->where('itm_idPro', $dados['Prod']);
+					return $this->db->get('tbl_item')->result();
+					break;
+
+				case 2:
+					$this->db->where('itm_id', $dados);
+					return $this->db->get('tbl_item')->result();
+					break;
+			}
+			
 		}
 
 		public function pesquisarNF($dados, $origem=NULL){
@@ -210,6 +226,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			
 		}
 
+		public function pesquisarAtivo($id=NULL, $origem=NULL){
+			
+			switch($origem){
+				case 1:
+					$this->db->where('atv_idITM', $id);
+					return $this->db->get('tbl_ativo');
+					break;
+
+				case 2:
+					$this->db->join('tbl_local', 'loc_id = atv_local', 'inner');
+					$this->db->join('tbl_produto', 'pro_id = atv_idPro', 'inner');
+					$this->db->where('atv_id', $id);
+					return $this->db->get('tbl_ativo');
+					break;
+			}
+
+		}
+
 		public function excluir($id=NULL, $origem=NULL){
 
 			switch($origem){
@@ -222,6 +256,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				case 2:
 					$this->db->where('ntf_id', $id['idNF']);
 					$this->db->delete('tbl_notaFiscal');
+					break;
+
+				//excluindo ativos 
+				case 3:
+					$this->db->where('atv_idITM', $id);
+					$this->db->delete('tbl_ativo');
+					break;
+
+				case 4:
+					$this->db->where('itm_id', $id);
+					$this->db->delete('tbl_item');
 					break;
 			}
 		}

@@ -6,6 +6,8 @@ class Ativo extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('Ativo_model', 'ativo');
+		$this->load->model('Code_model', 'code');
+		$this->load->library('ciqrcode');
 	}
 
 	public function index(){
@@ -23,7 +25,6 @@ class Ativo extends CI_Controller {
 		$this->verificarSessao();
 
 		//recebendo o valor do cnpj da empresa pela url
-		$dado = NULL;
 		$cnpj .= '/';
 		$cnpj .= $this->uri->segment(5);
 
@@ -42,11 +43,36 @@ class Ativo extends CI_Controller {
 				$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/adicionarItem_view');
 	
 			}else{
-				$this->session->set_flashdata('erro', 'Nota Fiscal não encontrada!');
-				redirect('ativo/listarNF');
+					$this->session->set_flashdata('erro', 'Nota Fiscal não encontrada!');
+					redirect('ativo/listarNF');
 			}
 
 
+
+	}
+
+	public function exibirAtivo($id=NULL){
+		//verificando a sessao
+		$this->verificarSessao();
+
+			if($id != NULL){
+				$ativo = NULL;
+				$data['query'] = $this->ativo->pesquisarAtivo($id, 2);
+				$data['tipo'] = $this->ativo->listarTodosTipos();
+				$data['id'] = $id;
+
+				$this->load->view('ativo/exibirAtivo_view', $data);
+				$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/exibirAtivo_view');				
+			}
+	}
+
+	public function listarAtivo(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		$data['query'] = $this->ativo->listarTodosAtivos();
+		$this->load->view('ativo/listarAtivos_view', $data);
+		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/listarAtivos_view');
 
 	}
 
@@ -220,64 +246,72 @@ class Ativo extends CI_Controller {
 										'max_length' => 'O campo %s excedeu o limite de 7 caracteres',
 										'is_natural' => 'Tipo de caractere(s) inválido(s).'));
 
-		if($this->input->post('quantidade') > 0){
-			//verificando se passou pela validação, se passou armazena os valores em um vetor
-			if($this->form_validation->run() == TRUE){
-				//array para armazenar o novo item
-				$data['itm_idNTF'] = $this->input->post('id');;
-				$data['itm_cnpjNTF'] = $this->input->post('cnpj');;
-				$data['itm_idPro'] = $this->input->post('empresa');
-				$data['itm_quantidade'] = $this->input->post('quantidade');
+		$status = $this->ativo->verificarStatus($this->input->post('id'), 3);
 
-				
-					//pesquisar se existe o produto cadastrado na NF
-					$item = NULL;
-					$dados['cnpj'] = $data['itm_cnpjNTF'];
-					$dados['id'] = $data['itm_idNTF'];
-					$dados['Prod'] = $data['itm_idPro'];
-					$item = $this->ativo->pesquisarItem($dados);
+		if($status == 1){
+			if($this->input->post('quantidade') > 0){
+				//verificando se passou pela validação, se passou armazena os valores em um vetor
+				if($this->form_validation->run() == TRUE){
+					//array para armazenar o novo item
+					$data['itm_idNTF'] = $this->input->post('id');;
+					$data['itm_cnpjNTF'] = $this->input->post('cnpj');;
+					$data['itm_idPro'] = $this->input->post('empresa');
+					$data['itm_quantidade'] = $this->input->post('quantidade');
 
-						if($item == NULL){
-							//passado o array para a funcao que insere no bd
-							$this->ativo->create($data, 4);
-							$this->session->set_flashdata('ok', 'Item inserido com sucesso!');
+					
+						//pesquisar se existe o produto cadastrado na NF
+						$item = NULL;
+						$dados['cnpj'] = $data['itm_cnpjNTF'];
+						$dados['id'] = $data['itm_idNTF'];
+						$dados['Prod'] = $data['itm_idPro'];
+						$item = $this->ativo->pesquisarItem($dados, 1);
 
-								//criando o total de ativos de acordo com a qntd de itens
-								//pesquisando novamente o item
-								$dados['cnpj'] = $data['itm_cnpjNTF'];
-								$dados['id'] = $data['itm_idNTF'];
-								$dados['Prod'] = $data['itm_idPro'];
-								$item = $this->ativo->pesquisarItem($dados);
+							if($item == NULL){
+								//passado o array para a funcao que insere no bd
+								$this->ativo->create($data, 4);
+								$this->session->set_flashdata('ok', 'Item inserido com sucesso!');
 
-									//criando os ativos de acordo com as qntds de itens
-									for($i = 0; $i < $data['itm_quantidade']; $i++){
-										//dados para criar os ativos
-										$ativo['atv_idITM'] = $item[0]->itm_id;
-										$ativo['atv_idNTF'] = $dados['id'];
-										$ativo['atv_cnpjNTF'] = $dados['cnpj'];
-										$ativo['atv_idPro'] = $dados['Prod'];
-										$ativo['atv_numPatr'] = '';
-										$ativo['atv_data'] = date('d/m/Y');
-										$ativo['atv_hora'] = date('H:i:s');
-										$ativo['atv_status'] = 1;
+									//criando o total de ativos de acordo com a qntd de itens
+									//pesquisando novamente o item
+									$dados['cnpj'] = $data['itm_cnpjNTF'];
+									$dados['id'] = $data['itm_idNTF'];
+									$dados['Prod'] = $data['itm_idPro'];
+									$item = $this->ativo->pesquisarItem($dados, 1);
 
-										//função para inserir no bd
-										$this->ativo->create($ativo, 5);
-									}
-		
-										redirect('ativo/carregarItem');
+										//criando os ativos de acordo com as qntds de itens
+										for($i = 0; $i < $data['itm_quantidade']; $i++){
+											//dados para criar os ativos
+											$ativo['atv_idITM'] = $item[0]->itm_id;
+											$ativo['atv_idNTF'] = $dados['id'];
+											$ativo['atv_cnpjNTF'] = $dados['cnpj'];
+											$ativo['atv_idPro'] = $dados['Prod'];
+											$ativo['atv_numPatr'] = '';
+											$ativo['atv_local'] = 84; //sem local
+											$ativo['atv_data'] = date('d/m/Y');
+											$ativo['atv_hora'] = date('H:i:s');
+											$ativo['atv_status'] = 1;
 
-						}else{
-							$this->session->set_flashdata('erro', 'Item já inserido na Nota Fiscal!');
-							redirect('ativo/carregarItem');
-						}		
+											//função para inserir no bd
+											$this->ativo->create($ativo, 5);
+										}
+
+							}else{
+								$this->session->set_flashdata('erro', 'Item já inserido na Nota Fiscal!');
+							}		
+				}else{
+					$this->listarNF();
+				}
 			}else{
-				$this->carregarItem();
+				$this->session->set_flashdata('erro', 'A QUANTIDADE tem que ser maior que zero!');
+				
 			}
 		}else{
-			$this->session->set_flashdata('erro', 'A QUANTIDADE tem que ser maior que zero!');
-			redirect('ativo/carregarItem');
-		}	
+			$this->session->set_flashdata('erro', 'Ative a Nota FIscal para adicionar item!');
+		}
+
+		
+
+		redirect('ativo/listarNF');	
 	}
 
 
@@ -650,6 +684,76 @@ class Ativo extends CI_Controller {
 			
 
 			redirect('ativo/listarNF');
+	}
+
+	public function excluirItem($id=NULL){
+
+		$ativo = NULL;
+		$item = NULL;
+		$i = 0;
+		$qntd = 0;
+		$ativo = $this->ativo->pesquisarAtivo($id, 1);
+		$item = $this->ativo->pesquisarItem($id, 2);
+
+			if($ativo != NULL){
+
+				foreach($ativo->result() as $res){
+					$vinculo[$i] = $res->atv_local;
+					$i++;
+				}
+
+					for($j = 0; $j < $i; $j++){
+						if($vinculo[$j] == NULL){
+							$qntd++;
+						}
+					}
+
+						if($qntd == $i){
+							if($item != NULL){
+								$this->ativo->excluir($id, 3);
+								$this->ativo->excluir($id, 4);
+								$this->session->set_flashdata('ok', 'Excluido com sucesso!');
+							}else{
+								$this->session->set_flashdata('erro', 'Item não encontrado!');
+							}
+						}else{
+							$this->session->set_flashdata('erro', 'Erro ao excluir!');
+						}
+
+			}
+
+			redirect('ativo/listarNF');	
+
+	}
+
+	public function gerarQRCode($id){
+		//verificando a sessao
+		$this->verificarSessao();
+		$query = NULL;
+		$query = $this->code->gerarQrCode($id, 2);
+
+			if($query != NULL){
+
+				header("Content-Type: image/png");
+				header('Content-Disposition: attachment; filename= "qrcode.png"');
+				header('Content-Disposition: attachment; filename= "hue.png"');
+
+				$params['data']  = "ID : ".$query[0]->atv_id. "\n";
+				$params['data'] .= "Número de Patrimônio: ".$query[0]->atv_numPatr."\n";
+				$params['data'] .= "Marca: ".$query[0]->pro_marca."\n";
+				$params['data'] .= "Local: ".$query[0]->loc_nome."\n";
+				
+				$params['size'] = 10;
+				$this->ciqrcode->generate($params);
+			}else{
+				$this->session->set_flashdata('erro', 'Ativo não encontrado !');
+				redirect('ativo/exibirAtivo/'.$id);
+			}
+
+
+
+		
+		
 	}
 	
 
