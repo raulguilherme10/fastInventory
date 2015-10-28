@@ -17,6 +17,11 @@
     </div>
 
     <div class="form-group">
+            <label class="control-label" for="modelo">Modelo</label>
+            <input class="form-control" name="modelo" id="modelo" placeholder="Digite o modelo do produto."  type="text" required value="<?php echo $query[0]->pro_modelo;?>">
+    </div>
+
+    <div class="form-group">
         <label class="control-label" for="cor">Cor</label>
         <input class="form-control" name="cor" id="cor" value="<?php echo $query[0]->pro_cor?>"  placeholder="Digite a cor principal do produto." type="text">
     </div>

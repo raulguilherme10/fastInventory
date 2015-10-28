@@ -4,7 +4,8 @@
             <td>Nota Fiscal</td>
             <td>Local</td>
             <td>Patrimônio</td>
-            <td>Status</td>
+            <td>Marca</td>
+            <td>Modelo</td>
             <td></td>
         </thead>
         <tbody>
@@ -13,7 +14,8 @@
                     <td><?php echo $res->ntf_numNota; ?></td>
                     <td><?php echo ellipsize($res->loc_nome, 15); ?></td>
                     <td><?php echo $res->atv_numPatr; ?></td>
-                    <td><?php echo $res->atv_status==1?'Ativo':'Inativo'; ?></td>
+                    <td><?php echo ellipsize($res->pro_marca, 10); ?></td>
+                    <td><?php echo ellipsize($res->pro_modelo, 10); ?></td>
                     <td>
                         <a href="<?php echo base_url('ativo/exibirAtivo/'.$res->atv_id);?>" class="btn btn btn-default btn-group" data-toggle="tooltip" data-placement="bottom" title="Exibir"><i class="glyphicon glyphicon-list-alt"></i></a>
                     </td>

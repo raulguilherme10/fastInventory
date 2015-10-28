@@ -54,9 +54,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			return $this->db->get('tbl_empresa');
 		}
 
-		public function listarTodosProdutos(){
-			$this->db->join('tbl_tipo', 'tip_id = pro_idTipo', 'inner');
-			return $this->db->get('tbl_produto');
+		public function listarTodosProdutos($origem){
+			switch($origem){
+				case 1:
+				$this->db->join('tbl_tipo', 'tip_id = pro_idTipo', 'inner');
+				$this->db->where('pro_status', $origem);
+				return $this->db->get('tbl_produto');
+
+				case 2:
+				$this->db->join('tbl_tipo', 'tip_id = pro_idTipo', 'inner');
+				return $this->db->get('tbl_produto');
+				break;
+			}
+			
 		}
 
 		public function listarTodosItens(){
@@ -78,6 +88,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 		public function listarTodosAtivos(){
 			$this->db->join('tbl_notaFiscal', 'ntf_id = atv_idNTF', 'inner');
+			$this->db->join('tbl_produto', 'pro_id = atv_idPro', 'inner');
 			$this->db->join('tbl_local', 'loc_id = 	atv_local', 'inner');
 			return $this->db->get('tbl_ativo');
 		}
@@ -253,6 +264,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					$this->db->join('tbl_local', 'loc_id = atv_local', 'inner');
 					$this->db->join('tbl_produto', 'pro_id = atv_idPro', 'inner');
 					$this->db->where('atv_id', $id);
+					return $this->db->get('tbl_ativo');
+					break;
+
+				case 3:
+					$this->db->order_by("atv_id", "desc");
+					$this->db->limit(1); 
 					return $this->db->get('tbl_ativo');
 					break;
 			}

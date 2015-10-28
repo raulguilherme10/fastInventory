@@ -37,7 +37,7 @@
             <div class="form-group">
                 <select name="empresa" id="empresa" class="form-control" autofocus required>
                     <?php foreach($query->result() as $res) {?>
-                      <option value="<?php echo $res->pro_id; ?>"><?php echo $res->tip_nome.' - '.$res->pro_marca;?></option>
+                      <option value="<?php echo $res->pro_id; ?>"><?php echo $res->tip_nome.' - '.$res->pro_marca.' - '.$res->pro_modelo;?></option>
                     <?php } ?>
                 </select>
             </div>
@@ -64,19 +64,25 @@
     <table class="table table-hover dt-responsive nowrap" cellspacing="0" id="myTable">
 
         <thead>
+            <td>Tipo</td>
             <td>Marca</td>
             <td>Modelo</td>
-            <td>Tipo</td>
             <td>Quantidade</td>
-            <td>Ações</td>
+            <td></td>
         </thead>
 
         <tbody>
         <?php foreach($item->result() as $res){?>
             <tr>
+                <td>
+                    <?php foreach($tipo->result() as $tip){
+                        if($tip->tip_id == $res->pro_idTipo){
+                            echo $tip->tip_nome;
+                        }
+                    }?>
+                </td>
                 <td><?php echo $res->pro_marca; ?></td>
                 <td><?php echo $res->pro_modelo; ?></td>
-                <td><?php echo $res->pro_idTipo; ?></td>
                 <td><?php echo $res->itm_quantidade; ?></td>
                 <td>
                     <a href="<?php echo base_url('ativo/excluirItem/'.$res->itm_id);?>" class="btn btn-danger btn-group"  onclick="return confirm('Deseja realmente excluir o item?');" data-toggle="tooltip" data-placement="bottom" title="Excluir"><i class="glyphicon glyphicon-trash"></i></a>

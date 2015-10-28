@@ -52,7 +52,7 @@
 				<td><?php echo $res->pro_status==1?'Ativo':'Inativo'; ?></td>
 				<td>
 					<a  href="<?php echo base_url('ativo/atualizarProduto/'.$res->pro_id);?>" class="btn btn-info btn-group" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="glyphicon glyphicon-pencil"></i></a>
-					<a  href="<?php echo base_url('ativo/trocarStatusProduto/'.$res->pro_id);?>" class="btn btn btn-default btn-group"  onclick="return confirm('Deseja trocar o status da empresa?');" data-toggle="tooltip" data-placement="bottom" title="Trocar Status"><i class="glyphicon glyphicon-edit"></i></a>
+					<a  href="<?php echo base_url('ativo/trocarStatusProduto/'.$res->pro_id);?>" class="btn btn btn-default btn-group"  onclick="return confirm('Deseja trocar o status do produto?');" data-toggle="tooltip" data-placement="bottom" title="Trocar Status"><i class="glyphicon glyphicon-edit"></i></a>
 				</td>	
 			</tr>
 			<?php }?>
@@ -86,6 +86,11 @@
 	    <div class="form-group">
 	        <label class="control-label" for="marca">Marca</label>
 	        <input class="form-control" name="marca" id="marca" placeholder="Digite a marca do produto."  type="text" required>
+	    </div>
+
+	    <div class="form-group">
+	        <label class="control-label" for="modelo">Modelo</label>
+	        <input class="form-control" name="modelo" id="modelo" placeholder="Digite o modelo do produto."  type="text" required>
 	    </div>
 
 	    <div class="form-group">

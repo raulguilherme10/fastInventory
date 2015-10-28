@@ -36,8 +36,9 @@ class Ativo extends CI_Controller {
 				//trazendo todos os tipos de produtos
 				//trzendo todos os itens da nota
 				//chamando a view e passando o array
-				$data['query'] = $this->ativo->listarTodosProdutos();
+				$data['query'] = $this->ativo->listarTodosProdutos(1);
 				$data['item'] =$this->ativo->listarItemNF($id, $cnpj);
+				$data['tipo'] = $this->ativo->listarTodosTipos();
 				$data['id'] = $id;
 				$data['cnpj'] = $cnpj;
 				$this->load->view('ativo/adicionarItem_view', $data);
@@ -92,7 +93,7 @@ class Ativo extends CI_Controller {
 		$this->verificarSessao();
 
 		$data['tipos'] = $this->ativo->listarTodosTipos();
-		$data['query'] = $this->ativo->listarTodosProdutos();
+		$data['query'] = $this->ativo->listarTodosProdutos(2);
 		$this->load->view('ativo/listarProdutos_view.php', $data);
 		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/listarProdutos_view.php');
 
@@ -163,8 +164,11 @@ class Ativo extends CI_Controller {
 
 		//validacao do formulario
 		$this->form_validation->set_rules('marca', 'Marca', 'required|max_length[50]', array(
-										'marcar' => 'O campo %s é obrigatório.',
+										'required' => 'O campo %s é obrigatório.',
 										'max_length' => 'O campo %s excedeu o limite de 50 caracteres.'));
+		$this->form_validation->set_rules('modelo', 'MODELO', 'required|max_length[20]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 20 caracteres.'));
 		$this->form_validation->set_rules('cor', 'COR', 'max_length[20]|alpha', array(
 										'max_length' => 'O campo %s excedeu o limite de 20 caracteres.',
 										'alpha' => 'Carateres inválidos no campo %s. '));
@@ -175,9 +179,11 @@ class Ativo extends CI_Controller {
 			if($this->form_validation->run() == TRUE){
 				//armazenar os valores do formulario em um array
 				$data['pro_marca'] = $this->input->post('marca');
+				$data['pro_modelo'] = $this->input->post('modelo');
 				$data['pro_cor'] = $this->input->post('cor');
 				$data['pro_descricao'] = $this->input->post('descricao');
 				$data['pro_idTipo'] = $this->input->post('tipo');
+				$data['pro_status'] = 1;
 
 				//passado o array para a funcao que insere no bd
 				$this->ativo->create($data, 2);
@@ -294,6 +300,22 @@ class Ativo extends CI_Controller {
 
 											//função para inserir no bd
 											$this->ativo->create($ativo, 5);
+
+											//trazendo o ultimo valor inserido
+											$obj = $this->ativo->pesquisarAtivo(0, 3)->result();
+											$hist['his_idATV'] = $obj[0]->atv_id;
+											$hist['his_idITM'] = $obj[0]->atv_idITM;
+											$hist['his_idNTF'] = $obj[0]->atv_idNTF;
+											$hist['his_cnpjNTF'] = $obj[0]->atv_cnpjNTF;
+											$hist['his_idPRO'] = $obj[0]->atv_idPro;
+											$hist['his_numPatr'] = $obj[0]->atv_numPatr;
+											$hist['his_local'] = $obj[0]->atv_local;
+											$hist['his_data'] = date('d/m/Y');
+											$hist['his_hora'] = date('H:i:s');
+
+											//mandando o array para a model
+											$this->ativo->create($hist, 6);
+
 										}
 
 							}else{
@@ -464,11 +486,6 @@ class Ativo extends CI_Controller {
 							//redireceionando a página
 							redirect('ativo/exibirAtivo/'.$id);
 				}
-
-			
-
-				
-
 		}else{
 			$this->atualizarAtivo($this->input->post('id'));
 		}
@@ -483,8 +500,11 @@ class Ativo extends CI_Controller {
 
 		//validacao do formulario
 		$this->form_validation->set_rules('marca', 'Marca', 'required|max_length[50]', array(
-										'marcar' => 'O campo %s é obrigatório.',
+										'required' => 'O campo %s é obrigatório.',
 										'max_length' => 'O campo %s excedeu o limite de 50 caracteres.'));
+		$this->form_validation->set_rules('modelo', 'MODELO', 'required|max_length[20]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 20 caracteres.'));
 		$this->form_validation->set_rules('cor', 'COR', 'max_length[20]|alpha', array(
 										'max_length' => 'O campo %s excedeu o limite de 20 caracteres.',
 										'alpha' => 'Carateres inválidos no campo %s. '));
@@ -497,6 +517,7 @@ class Ativo extends CI_Controller {
 				$id = $this->input->post('id');
 
 				$data['pro_marca'] = $this->input->post('marca');
+				$data['pro_modelo'] = $this->input->post('modelo');
 				$data['pro_cor'] = $this->input->post('cor');
 				$data['pro_descricao'] = $this->input->post('descricao');
 				$data['pro_idTipo'] = $this->input->post('tipo');
@@ -798,7 +819,7 @@ class Ativo extends CI_Controller {
 				}
 
 					for($j = 0; $j < $i; $j++){
-						if($vinculo[$j] == NULL){
+						if($vinculo[$j] == 84){
 							$qntd++;
 						}
 					}
