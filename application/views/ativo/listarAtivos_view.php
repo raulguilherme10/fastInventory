@@ -1,30 +1,3 @@
-<?php 
-    if($this->session->flashdata('ok')){
-    ?>
-        <div class="alert alert-success" role="alert">
-            <?php echo $this->session->flashdata('ok')?>
-        </div>
-    <?php
-    }else{
-    	if($this->session->flashdata('erro')){
-    	?>
-	        <div class="alert alert-danger" role="alert">
-	            <?php echo $this->session->flashdata('erro')?>
-	        </div>
-    	<?php
-    	}else{
-    		if(validation_errors() != NULL){
-            ?>
-	            <div class="alert alert-danger" role="alert">
-	                <?php echo validation_errors(); ?>
-	            </div>
-            <?php
-        	}
-    	}
-    }
-?>
-
-
 <div class="row tablist">
     <table class="table table-hover dt-responsive nowrap" cellspacing="0" id="myTable">
         <thead>

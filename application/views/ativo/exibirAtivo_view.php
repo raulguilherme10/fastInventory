@@ -1,3 +1,31 @@
+<?php 
+    if($this->session->flashdata('ok')){
+    ?>
+        <div class="alert alert-success" role="alert">
+            <?php echo $this->session->flashdata('ok')?>
+        </div>
+    <?php
+    }else{
+    	if($this->session->flashdata('erro')){
+    	?>
+	        <div class="alert alert-danger" role="alert">
+	            <?php echo $this->session->flashdata('erro')?>
+	        </div>
+    	<?php
+    	}else{
+    		if(validation_errors() != NULL){
+            ?>
+	            <div class="alert alert-danger" role="alert">
+	                <?php echo validation_errors(); ?>
+	            </div>
+            <?php
+        	}
+    	}
+    }
+?>
+
+
+
 <div class="row">
 	<div class="col-md-12">
 		<fieldset>
@@ -5,7 +33,7 @@
 				<div class="col-md-4"><h2>Ativo</h2></div>
 				<div class="col-md-4"></div>
 				<div class="col-md-4 botao">
-					<a class="btn btn-info btn-group" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="glyphicon glyphicon-pencil"></i></a>
+					<a href="<?php echo base_url('ativo/atualizarAtivo/'.$id);?>" class="btn btn-info btn-group" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="glyphicon glyphicon-pencil"></i></a>
 					<a href="<?php echo base_url('ativo/gerarQRCode/'.$id);?>" class="btn btn-default btn-group" data-toggle="tooltip" data-placement="bottom" title="Gerar QR Code"><i class="glyphicon glyphicon-qrcode"></i></a>
 					<a href="<?php echo base_url('ativo/listarAtivo');?>" class="btn btn-warning btn-group" data-toggle="tooltip" data-placement="bottom" title="Voltar para lista"><i class="glyphicon glyphicon-list-alt"></i></a>
 				</div>

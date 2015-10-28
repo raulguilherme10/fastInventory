@@ -29,6 +29,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						$this->db->insert('tbl_ativo', $dados);
 						break;
 
+					case 6:
+						$this->db->insert('tbl_historico', $dados);
+						break;
+
 				}
 				
 			}
@@ -122,6 +126,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			}else{
 				return 0;
 			}
+		}
+
+		public function editarAtivo($id=NULL, $data=NULL){
+			if($id != NULL){
+				$this->db->where('atv_id', $id);
+				$this->db->update('tbl_ativo', $data);
+				return 1;
+			}else{
+				return 0;
+			}
+
 		}
 
 		public function trocarStatus($id=NULL, $data=NULL, $origem){

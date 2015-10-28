@@ -7,6 +7,7 @@ class Ativo extends CI_Controller {
 		parent::__construct();
 		$this->load->model('Ativo_model', 'ativo');
 		$this->load->model('Code_model', 'code');
+		$this->load->model('Localizacao_model', 'loc');
 		$this->load->library('ciqrcode');
 	}
 
@@ -382,6 +383,100 @@ class Ativo extends CI_Controller {
 			}
 	}
 
+	public function atualizarAtivo($id){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//pesquisar o ativo
+		$dado = NULL;
+		$ativo = $this->ativo->pesquisarAtivo($id, 2);
+		$dado = $ativo->result();
+
+				if($dado != NULL){
+					$data['query'] = $dado;
+					$data['local'] = $this->loc->listarTodos(2);
+					$data['tipo'] = $this->ativo->listarTodosTipos();
+					$this->load->view('ativo/editarAtivo_view.php', $data);
+					$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/editarAtivo_view.php');
+	
+				}else{
+					$this->session->set_flashdata('erro', 'Ativo não encontrado!');
+				}
+
+	}
+
+	public function editarAtivo(){
+
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//validando o formulário
+		$this->form_validation->set_rules('np', 'NÚMERO DE PATRIMÔNIO', 'required|max_length[12]|is_natural', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 12 caracteres',
+										'is_natural' => 'Tipo de caractere(s) inválido(s).'));
+
+		//recebendo os valores
+		if($this->form_validation->run() == TRUE){
+			$id = $this->input->post('id');
+			$data['atv_numPatr'] = $this->input->post('np');
+			$data['atv_local'] = $this->input->post('local');
+			$data['atv_status'] = $this->input->post('status');
+
+			//pesquisando o ativo para verificar se mudou de localização
+			$ativo = $this->ativo->pesquisarAtivo($id, 2)->result();
+
+				//se houver alguma mudança no local ou no número de patrimônio
+				//o sistema irá cadastrar essa mudança na tbl histórico
+				if($ativo[0]->atv_local != $data['atv_local'] || $ativo[0]->atv_numPatr != $data['atv_numPatr']){
+					//editando o ativo
+					$retorno = $this->ativo->editarAtivo($id, $data);
+						if($retorno == 1){
+							$this->session->set_flashdata('ok', 'Editado com sucesso!');
+						}else{
+							$this->session->set_flashdata('erro', 'Erro ao Editar!');
+						}
+
+						//armazenando a edição no historico
+						$ativo = $this->ativo->pesquisarAtivo($id, 2)->result();
+						$dados['his_idATV'] = $ativo[0]->atv_id;
+						$dados['his_idITM'] = $ativo[0]->atv_idITM;
+						$dados['his_idNTF'] = $ativo[0]->atv_idNTF;
+						$dados['his_cnpjNTF'] = $ativo[0]->atv_cnpjNTF;
+						$dados['his_idPRO'] = $ativo[0]->atv_idPro;
+						$dados['his_numPatr'] = $ativo[0]->atv_numPatr;
+						$dados['his_local'] = $ativo[0]->atv_local;
+						$dados['his_data'] = date('d/m/Y');
+						$dados['his_hora'] = date('H:i:s');
+
+						//mandando o array para a model
+						$this->ativo->create($dados, 6);
+						//redireceionando a página
+						redirect('ativo/exibirAtivo/'.$id);
+					
+				}else{
+						$retorno = $this->ativo->editarAtivo($id, $data);
+							if($retorno == 1){
+								$this->session->set_flashdata('ok', 'Editado com sucesso!');
+							}else{
+								$this->session->set_flashdata('erro', 'Erro ao Editar!');
+							}
+							//redireceionando a página
+							redirect('ativo/exibirAtivo/'.$id);
+				}
+
+			
+
+				
+
+		}else{
+			$this->atualizarAtivo($this->input->post('id'));
+		}
+		
+
+
+	}
+
 	public function editarProduto(){
 		//verificando a sessao
 		$this->verificarSessao();
@@ -742,7 +837,7 @@ class Ativo extends CI_Controller {
 				$params['data'] .= "Número de Patrimônio: ".$query[0]->atv_numPatr."\n";
 				$params['data'] .= "Marca: ".$query[0]->pro_marca."\n";
 				$params['data'] .= "Local: ".$query[0]->loc_nome."\n";
-				
+
 				$params['size'] = 10;
 				$this->ciqrcode->generate($params);
 			}else{

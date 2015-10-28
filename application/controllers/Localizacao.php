@@ -50,7 +50,7 @@ class Localizacao extends CI_Controller {
 		//verificando a sessao
 		$this->verificarSessao();
 
-		$dados['query'] = $this->loc->listarTodos();
+		$dados['query'] = $this->loc->listarTodos(1);
 
 		$this->load->view('localizacao/listarLocalizacao_view', $dados);
 		$this->template->set_partial('lateral', 'partials/lateral-localizacao')->set_layout('default')->build('localizacao/listarLocalizacao_view');
