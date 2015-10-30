@@ -52,13 +52,13 @@
 		<fieldset>
 			<legend>Ativos por Localização</legend>
 
-			<form action="<?php echo base_url('ativo/pesquisarAtivo'); ?>" method="post">
+			<form action="<?php echo base_url('relatorio/ativosPorLocal'); ?>" method="post">
 				 
-				 <div class="form-group">
+				<div class="form-group">
 			 		<select name="opc" id="opc" class="form-control">
-		              <option value="0">ID</option>
-		              <option value="1">Patrimônio</option>
-		              <option value="2">Local</option>
+			 		  <?php foreach($local->result() as $res) {?>
+		              <option value="<?php echo $res->loc_id; ?>"><?php echo $res->loc_nome; ?></option>
+		              <?php } ?>
 		            </select>
 			    </div>
 

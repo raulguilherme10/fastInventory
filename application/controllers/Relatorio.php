@@ -67,7 +67,7 @@ class Relatorio extends CI_Controller {
 					if($this->form_validation->run() == TRUE){
 						$id = $this->input->post('pesq');
 						$retorno = NULL;
-						$retorno = $this->loc->pesquisarLocal($id)->result();
+						$retorno = $this->loc->pesquisarLocal($id, 1)->result();
 						$data['pesq'] = $id;
 
 							if($retorno != NULL){
@@ -90,26 +90,45 @@ class Relatorio extends CI_Controller {
 			}
 	}
 
+	public function ativosPorLocal(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		$id = $this->input->post('opc');
+		$data['local'] = $this->loc->pesquisarLocal($id, 2)->result();
+		$data['query'] = $this->ativo->pesquisarAtivo($id, 4);
+		$this->gerarRelatorio($data, 2);
+	}
+
 	public function gerarRelatorio($data=NULL, $origem=NULL){
 		//verificando a sessao
 		$this->verificarSessao();
 
-		
-			$html = $this->load->view('relatorio/modelos/historicoAtivo_view', $data, true);
+			//iniciando o relatório
 			$mpdf=new mPDF('','', 0, '', 15, 15, 25, 16, 9, 9, 'L');
 			//tamanho do pdf 
 			$mpdf->SetDisplayMode('fullpage');
-			//titulo
-			$mpdf->SetTitle('Histórico do Ativo');
 			//cabeçalho
 			$mpdf->SetHeader('|Faculdade de Tecnologia Dom Amaury Castanho <br /> 	Av. Tiradentes, 1211 - Parque Industrial, Itu - SP, 13309-640 <br />(11) 4013-1872|');
 			//rodapé
 			$mpdf->SetFooter('|Página {PAGENO} de {nb}|www.fatecitu.edu.br');
+
+			switch($origem){
+				case 1:
+					$html = $this->load->view('relatorio/modelos/historicoAtivo_view', $data, true);
+					//titulo
+					$mpdf->SetTitle('Histórico do Ativo');
+					break;
+
+				case 2:
+					$html = $this->load->view('relatorio/modelos/ativosPorLocal_view', $data, true);
+					//titulo
+					$mpdf->SetTitle('Ativos por Local');
+					break;
+			}
+
 			//conteúdo
 			$mpdf->WriteHTML($html);
-
-			
-			
 			//gerar pdf
 			$mpdf->Output();
 	}

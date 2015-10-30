@@ -54,8 +54,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			
 		}
 
-		public function pesquisarLocal($id){
-			$this->db->where('loc_nome', $id);
+		public function pesquisarLocal($id, $origem){
+			switch($origem){
+				case 1:
+					$this->db->where('loc_nome', $id);
+					break;
+
+				case 2:
+					$this->db->where('loc_id', $id);
+					break;
+			}
+			
 			return $this->db->get('tbl_local');
 		}
 

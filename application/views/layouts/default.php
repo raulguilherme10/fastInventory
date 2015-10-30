@@ -91,9 +91,6 @@
                         <li class="<?php if($this->uri->segment(1)=="localizacao"){echo "active";}?>">
                             <a href="<?php echo base_url('localizacao'); ?>"><i class="glyphicon glyphicon-remove-circle"></i> Localização</a>
                         </li>
-                        <li class="<?php if($this->uri->segment(1)=="relatorio"){echo "active";}?>">
-                            <a href="<?php echo base_url('relatorio'); ?>"><i class="glyphicon glyphicon-file"></i> Relatório</a>
-                        </li>
                         <li>
                             <a href="<?php echo base_url('login/logoutUsuario'); ?>"><i class="glyphicon glyphicon-off"></i> Sair</a>
                         </li>

@@ -57,7 +57,8 @@ class Ativo extends CI_Controller {
 		//verificando a sessao
 		//chamando a view
 		$this->verificarSessao();
-
+		$data['local'] = $this->loc->listarTodos(2);
+		$this->load->view('ativo/relatorio_view', $data);
 		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/relatorio_view');				
 	}
 
@@ -941,7 +942,7 @@ class Ativo extends CI_Controller {
 				if($this->form_validation->run() == TRUE){
 					$id = $this->input->post('pesquisar');
 					$retorno = NULL;
-					$retorno = $this->loc->pesquisarLocal($id)->result();
+					$retorno = $this->loc->pesquisarLocal($id, 1)->result();
 					$data['pesq'] = $id;
 
 						if($retorno != NULL){
