@@ -7,6 +7,7 @@ class Localizacao extends CI_Controller {
 		parent::__construct();
 		$this->load->model('Localizacao_model', 'loc');
 		$this->load->model('Code_model', 'code');
+		$this->load->model('Ativo_model', 'ativo');
 		$this->load->library('ciqrcode');
 	}
 
@@ -19,6 +20,23 @@ class Localizacao extends CI_Controller {
 
 	public function index(){
 		redirect('localizacao/listarLocalizacao');
+	}
+
+	public function carregarAtivosLocal($data=NULL){
+		//verificando a sessao
+		$this->verificarSessao();
+
+			if($data == NULL){
+				$data['query'] = $this->ativo->pesquisarAtivo(0, 4);
+			}
+
+			$data['local'] = $this->loc->listarTodos(2);
+			$this->load->view('localizacao/ativosPorLocal_view', $data);
+			$this->template->set_partial('lateral', 'partials/lateral-localizacao')->set_layout('default')->build('localizacao/ativosPorLocal_view');
+		
+		
+
+		
 	}
 
 
@@ -129,6 +147,15 @@ class Localizacao extends CI_Controller {
 		}
 		
 		
+	}
+
+	public function pesquisarPorLocal(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		$id = $this->input->post('opc');
+		$data['query'] = $this->ativo->pesquisarAtivo($id, 4);
+		$this->carregarAtivosLocal($data);
 	}
 
 }

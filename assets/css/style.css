@@ -23,3 +23,15 @@ html, body{
 .botao{
 	margin-top: 3%;
 }
+
+.borda{
+	border: 1px #e4e4e4 solid;
+	padding: 20px;
+	border-radius: 4px;
+	box-shadow: 0 0 6px #ccc;
+	background-color: #fff;
+}
+
+.divergencia{
+	margin-top: 5%;
+}

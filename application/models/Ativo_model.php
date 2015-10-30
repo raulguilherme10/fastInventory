@@ -272,8 +272,54 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					$this->db->limit(1); 
 					return $this->db->get('tbl_ativo');
 					break;
+
+				case 4:
+					$this->db->join('tbl_produto', 'pro_id = atv_idPro', 'inner');
+					$this->db->where('atv_local', $id);
+					return $this->db->get('tbl_ativo');
+					break;
+
+				case 5:
+					$this->db->join('tbl_local', 'loc_id = atv_local', 'inner');
+					$this->db->join('tbl_produto', 'pro_id = atv_idPro', 'inner');
+					$this->db->where('atv_numPatr', $id);
+					return $this->db->get('tbl_ativo');
+					break;
 			}
 
+		}
+
+		public function pesquisarHistorico($id=NULL, $origem=NULL){
+			switch($origem){
+				case 1:
+					$this->db->join('tbl_produto', 'pro_id = his_idPRO', 'inner');
+					$this->db->join('tbl_local', 'loc_id = his_local', 'inner');
+					$this->db->where('his_idATV', $id);
+					return $this->db->get('tbl_historico');
+					break;
+
+				case 2:
+					if($id['opc']==0){
+						$this->db->join('tbl_produto', 'pro_id = his_idPRO', 'inner');
+						$this->db->join('tbl_local', 'loc_id = his_local', 'inner');
+						$this->db->where('his_idATV', $id['pesq']);
+						return $this->db->get('tbl_historico');
+					}else{
+						if($id['opc'] == 1){
+							$this->db->join('tbl_produto', 'pro_id = his_idPRO', 'inner');
+							$this->db->join('tbl_local', 'loc_id = his_local', 'inner');
+							$this->db->where('his_numPatr', $id['pesq']);
+							return $this->db->get('tbl_historico');
+						}else{
+							$this->db->join('tbl_produto', 'pro_id = his_idPRO', 'inner');
+							$this->db->join('tbl_local', 'loc_id = his_local', 'inner');
+							$this->db->where('his_local', $id['pesq']);
+							return $this->db->get('tbl_historico');
+						}
+						
+					}
+					break;
+			}
 		}
 
 		public function excluir($id=NULL, $origem=NULL){

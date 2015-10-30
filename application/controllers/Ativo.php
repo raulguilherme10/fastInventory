@@ -53,6 +53,26 @@ class Ativo extends CI_Controller {
 
 	}
 
+	public function carregarRelatorio(){
+		//verificando a sessao
+		//chamando a view
+		$this->verificarSessao();
+
+		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/relatorio_view');				
+	}
+
+	public function historico($data=NULL){
+		//verificando a sessao
+		$this->verificarSessao();
+
+			if($data == NULL){
+				$data['query'] = $this->ativo->pesquisarHistorico(0, 1);
+			}
+
+			$this->load->view('ativo/historicoAtivo_view', $data);
+			$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/historicoAtivo_view');
+	}
+
 	public function exibirAtivo($id=NULL){
 		//verificando a sessao
 		$this->verificarSessao();
@@ -292,7 +312,7 @@ class Ativo extends CI_Controller {
 											$ativo['atv_idNTF'] = $dados['id'];
 											$ativo['atv_cnpjNTF'] = $dados['cnpj'];
 											$ativo['atv_idPro'] = $dados['Prod'];
-											$ativo['atv_numPatr'] = '';
+											$ativo['atv_numPatr'] = 0;
 											$ativo['atv_local'] = 84; //sem local
 											$ativo['atv_data'] = date('d/m/Y');
 											$ativo['atv_hora'] = date('H:i:s');
@@ -865,11 +885,91 @@ class Ativo extends CI_Controller {
 				$this->session->set_flashdata('erro', 'Ativo não encontrado !');
 				redirect('ativo/exibirAtivo/'.$id);
 			}
+		
+	}
 
+	public function pesquisarAtivo(){
+		//verificando a sessao
+		$this->verificarSessao();
 
+		//recebendo os valores do formulário
+		$data['pesq'] = $this->input->post('pesquisar');
+		$data['opc'] = $this->input->post('opc');
+
+		//ver se existe o que foi pesquisado
+		switch($data['opc']){
+			case 0:
+				$id = $data['pesq'];
+				$retorno = NULL;
+				$retorno = $this->ativo->pesquisarAtivo($id, 2)->result();
+
+					if($retorno != NULL){
+						$data['query'] = $this->ativo->pesquisarHistorico($data, 2);
+						$this->historico($data);						
+					}else{
+						$this->session->set_flashdata('erro', 'Ativo não encontrado!');
+						$data = NULL;
+						redirect('ativo/historico/'.$data);
+					}
+				break;
+
+			case 1:
+				$this->form_validation->set_rules('pesquisar', 'Pesquisa', 'is_natural');
+				if($this->form_validation->run() == TRUE){
+
+					$id = $this->input->post('pesquisar');
+					$retorno = NULL;
+					$retorno = $this->ativo->pesquisarAtivo($id, 5)->result();
+
+						if($retorno != NULL){
+							$data['query'] = $this->ativo->pesquisarHistorico($data, 2);
+							$this->historico($data);						
+						}else{
+							$this->session->set_flashdata('erro', 'Ativo não encontrado!');
+							$data = NULL;
+							redirect('ativo/historico/'.$data);
+						}
+				}else{
+					$this->session->set_flashdata('erro', 'Ativo não encontrado!');
+					$data = NULL;
+					redirect('ativo/historico/'.$data);
+				}
+				break;
+
+			case 2:
+				$this->form_validation->set_rules('pesquisar', 'Pesquisa', 'ucwords');
+				if($this->form_validation->run() == TRUE){
+					$id = $this->input->post('pesquisar');
+					$retorno = NULL;
+					$retorno = $this->loc->pesquisarLocal($id)->result();
+					$data['pesq'] = $id;
+
+						if($retorno != NULL){
+							$local = $this->loc->listarTodos(2);
+							foreach($local->result() as $res){
+								if($res->loc_nome == $data['pesq']){
+									$data['pesq'] = $res->loc_id;
+								}
+							}
+
+							$data['query'] = $this->ativo->pesquisarHistorico($data, 2);
+							$this->historico($data);
+						}else{
+							$this->session->set_flashdata('erro', 'Localização não encontrada!');
+							$data = NULL;
+							redirect('ativo/historico/'.$data);
+						}
+				}
+				
+				break;
+		}
+		
 
 		
 		
+
+
+
 	}
 	
 

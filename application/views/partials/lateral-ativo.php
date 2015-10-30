@@ -11,7 +11,10 @@
         <li class="<?php if($this->uri->segment(2)=="listarAtivo" || $this->uri->segment(2)=="exibirAtivo" || $this->uri->segment(2)=="atualizarAtivo"){echo "active";}?>">
             <a href="<?php echo base_url('ativo/listarAtivo')?>">Ativo</a>
         </li>
-        <li class="<?php if($this->uri->segment(2)=="historicoAtivo"){echo "active";}?>">
-            <a href="<?php echo base_url('ativo/historicoAtivo')?>">Histórico</a>
+        <li class="<?php if($this->uri->segment(2)=="historico" || $this->uri->segment(2)=="pesquisarAtivo"){echo "active";}?>">
+            <a href="<?php echo base_url('ativo/historico')?>">Histórico</a>
+        </li>
+        <li class="<?php if($this->uri->segment(2)=="carregarRelatorio"){echo "active";}?>">
+            <a href="<?php echo base_url('ativo/carregarRelatorio')?>">Relatório</a>
         </li>
  </ul>

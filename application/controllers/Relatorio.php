@@ -5,6 +5,8 @@ class Relatorio extends CI_Controller {
 
 	public function __construct(){
 		parent::__construct();
+		$this->load->model('Ativo_model', 'ativo');
+		$this->load->model('Localizacao_model', 'loc');
 		$this->load->library('mpdf/mpdf');
 		$this->load->model('localizacao_model', 'loc');
 	}
@@ -16,16 +18,99 @@ class Relatorio extends CI_Controller {
 		}
 	}
 
-	public function index(){
+	public function pesquisarHistorico(){
 		//verificando a sessao
-		//chamando a view
 		$this->verificarSessao();
 
-		$data['combobox'] = $this->loc->listarTodos();
+		//recebendo os valores do formulário
+		$data['pesq'] = $this->input->post('pesq');
+		$data['opc'] = $this->input->post('opc');
 
-		$this->load->view('relatorio/ativosPorLocal_view', $data);
-		$this->template->set_partial('lateral', 'partials/lateral-relatorio')->set_layout('default')->build('relatorio/ativosPorLocal_view');
+			switch($data['opc']){
+				case 0:
+					$id = $data['pesq'];
+					$retorno = NULL;
+					$retorno = $this->ativo->pesquisarAtivo($id, 2)->result();
 
+						if($retorno != NULL){
+							$data['query'] = $this->ativo->pesquisarHistorico($data, 2);
+							$this->gerarRelatorio($data, 1);						
+						}else{
+							$this->session->set_flashdata('erro', 'Ativo não encontrado!');
+							redirect('ativo/carregarRelatorio');
+						}
+					break;
 
+				case 1:
+					$this->form_validation->set_rules('pesq', 'Pesquisa', 'is_natural');
+					if($this->form_validation->run() == TRUE){
+
+						$id = $data['pesq'];
+						$retorno = NULL;
+						$retorno = $this->ativo->pesquisarAtivo($id, 5)->result();
+
+							if($retorno != NULL){
+								$data['query'] = $this->ativo->pesquisarHistorico($data, 2);
+								$this->gerarRelatorio($data, 1);						
+							}else{
+								$this->session->set_flashdata('erro', 'Ativo não encontrado!');
+								redirect('ativo/carregarRelatorio');
+							}
+					}else{
+						$this->session->set_flashdata('erro', 'Ativo não encontrado!');
+						redirect('ativo/carregarRelatorio');
+					}
+					break;
+
+				case 2:
+					$this->form_validation->set_rules('pesq', 'Pesquisa', 'ucwords');
+					if($this->form_validation->run() == TRUE){
+						$id = $this->input->post('pesq');
+						$retorno = NULL;
+						$retorno = $this->loc->pesquisarLocal($id)->result();
+						$data['pesq'] = $id;
+
+							if($retorno != NULL){
+								$local = $this->loc->listarTodos(2);
+								foreach($local->result() as $res){
+									if($res->loc_nome == $data['pesq']){
+										$data['pesq'] = $res->loc_id;
+									}
+								}
+
+								$data['query'] = $this->ativo->pesquisarHistorico($data, 2);
+								$this->gerarRelatorio($data, 1);
+							}else{
+								$this->session->set_flashdata('erro', 'Localização não encontrada!');
+								redirect('ativo/carregarRelatorio');
+							}
+					}
+					
+					break;
+			}
+	}
+
+	public function gerarRelatorio($data=NULL, $origem=NULL){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		
+			$html = $this->load->view('relatorio/modelos/historicoAtivo_view', $data, true);
+			$mpdf=new mPDF('','', 0, '', 15, 15, 25, 16, 9, 9, 'L');
+			//tamanho do pdf 
+			$mpdf->SetDisplayMode('fullpage');
+			//titulo
+			$mpdf->SetTitle('Histórico do Ativo');
+			//cabeçalho
+			$mpdf->SetHeader('|Faculdade de Tecnologia Dom Amaury Castanho <br /> 	Av. Tiradentes, 1211 - Parque Industrial, Itu - SP, 13309-640 <br />(11) 4013-1872|');
+			//rodapé
+			$mpdf->SetFooter('|Página {PAGENO} de {nb}|www.fatecitu.edu.br');
+			//conteúdo
+			$mpdf->WriteHTML($html);
+
+			
+			
+			//gerar pdf
+			$mpdf->Output();
 	}
 }
