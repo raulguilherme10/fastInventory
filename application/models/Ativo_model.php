@@ -169,6 +169,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					$this->db->update('tbl_notaFiscal', $data);
 					break;
 
+				case 4:
+					$this->db->where('atv_id', $id);
+					$this->db->update('tbl_ativo', $data);
+					break;
+
+				case 5:
+					$this->db->where('fis_id', $id);
+					$this->db->update('tbl_fiscalizar', $data);
+					break;
+
 			}
 			
 
@@ -347,6 +357,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					$this->db->delete('tbl_item');
 					break;
 			}
+		}
+
+		public function listarFiscalizacao(){
+			$this->db->join('tbl_local', 'loc_id = fis_local', 'inner');
+			return $this->db->get('tbl_fiscalizar');
+		}
+
+		public function listarDivergencia($id){
+			$this->db->join('tbl_produto', 'pro_id = div_idPRO', 'inner');
+			$this->db->join('tbl_empresa', 'emp_cnpj = div_cnpjEMP', 'inner');
+			$this->db->join('tbl_ativo', 'atv_id = div_idATV', 'inner');
+			$this->db->where('div_idFis', $id);
+			return $this->db->get('tbl_divergencia');
 		}
 
 

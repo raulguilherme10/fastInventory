@@ -58,6 +58,7 @@ class Ativo extends CI_Controller {
 		//chamando a view
 		$this->verificarSessao();
 		$data['local'] = $this->loc->listarTodos(2);
+		$data['fiscalizar'] = $this->ativo->listarFiscalizacao();
 		$this->load->view('ativo/relatorio_view', $data);
 		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/relatorio_view');				
 	}
@@ -964,15 +965,8 @@ class Ativo extends CI_Controller {
 				
 				break;
 		}
-		
-
-		
-		
-
-
 
 	}
-	
 
 	
 }
