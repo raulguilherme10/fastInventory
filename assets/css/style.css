@@ -12,9 +12,6 @@ html, body{
 	margin-top: 6%;
 }
 
-.menu{
-	position: fixed !important;
-}
 
 .conteudo{
 	margin-top: 50px;
@@ -34,4 +31,8 @@ html, body{
 
 .divergencia{
 	margin-top: 5%;
+}
+
+.ativo{
+	margin-top: 100px;
 }

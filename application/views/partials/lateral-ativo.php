@@ -1,4 +1,7 @@
 <ul class="nav nav-pills nav-stacked">
+        <li class="<?php if($this->uri->segment(2)=="listarTipo" || $this->uri->segment(2)=="cadastrarTipo" || $this->uri->segment(2)=="atualizarTipo"){echo "active";}?>">
+            <a href="<?php echo base_url('ativo/listarTipo')?>">Tipo</a>
+        </li>
         <li class="<?php if($this->uri->segment(2)=="listarEmpresas" || $this->uri->segment(2)=="atualizarEmpresa" || $this->uri->segment(2)=="editarEmpresa" || $this->uri->segment(2)==""){echo "active";}?>">
             <a href="<?php echo base_url('ativo/listarEmpresas')?>">Empresa</a>
         </li>

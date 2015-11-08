@@ -69,7 +69,7 @@
 
         
         <!-- Inicio Menu principal-->
-        <div class="navbar navbar-default navbar-inverse navbar-fixed-top menu">
+        <div class="navbar navbar-default navbar-inverse">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse">
@@ -130,7 +130,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <h1>Fast Inventory</h1>
-                        <p>Copyright © 2015 | Raul Guilherme Pereira | Sr. Nigga
+                        <p>Copyright © 2015 | Raul Guilherme Pereira
                             <br>Telefone (11) 4022-3398
                             <br>Celular (11) 99988-2345</p>
                     </div>

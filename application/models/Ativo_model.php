@@ -33,6 +33,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						$this->db->insert('tbl_historico', $dados);
 						break;
 
+					case 7:
+						$this->db->insert('tbl_tipo', $dados);
+
 				}
 				
 			}
@@ -107,6 +110,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			$this->db->where('ntf_id', $id);
 			$this->db->where('ntf_cnpjEmp', $cnpj);
 			return $this->db->get('tbl_notaFiscal')->result();
+		}
+
+		public function atualizarTipo($id=NULL){
+			$this->db->where('tip_id', $id);
+			return $this->db->get('tbl_tipo')->result();
+		}
+
+		public function editarTipo($id=NULL, $data=NULL){
+			$this->db->where('tip_id', $id);
+			$this->db->update('tbl_tipo', $data);
 		}
 
 		public function editarEmpresa($cnpj=NULL, $data=NULL){
@@ -273,6 +286,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				case 2:
 					$this->db->join('tbl_local', 'loc_id = atv_local', 'inner');
 					$this->db->join('tbl_produto', 'pro_id = atv_idPro', 'inner');
+					$this->db->join('tbl_item', 'itm_id = atv_idITM', 'inner');
 					$this->db->where('atv_id', $id);
 					return $this->db->get('tbl_ativo');
 					break;

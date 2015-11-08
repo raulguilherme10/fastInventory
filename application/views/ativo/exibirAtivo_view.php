@@ -25,27 +25,29 @@
 ?>
 
 
-
 <div class="row">
 	<div class="col-md-12">
 		<fieldset>
-			<legend>
-				<div class="col-md-4"><h2>Ativo</h2></div>
-				<div class="col-md-4"></div>
-				<div class="col-md-4 botao">
-					<a href="<?php echo base_url('ativo/atualizarAtivo/'.$id);?>" class="btn btn-info btn-group" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="glyphicon glyphicon-pencil"></i></a>
-					<a href="<?php echo base_url('ativo/gerarQRCode/'.$id);?>" class="btn btn-default btn-group" data-toggle="tooltip" data-placement="bottom" title="Gerar QR Code"><i class="glyphicon glyphicon-qrcode"></i></a>
-					<a href="<?php echo base_url('ativo/listarAtivo');?>" class="btn btn-warning btn-group" data-toggle="tooltip" data-placement="bottom" title="Voltar para lista"><i class="glyphicon glyphicon-list-alt"></i></a>
-				</div>
-			</legend>
+		<legend>
+			<div class="col-md-4"><h2>Ativo</h2></div>
+			<div class="col-md-4"></div>
+			<div class="col-md-4 botao">
+				<a href="<?php echo base_url('ativo/atualizarAtivo/'.$id);?>" class="btn btn-info btn-group" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="glyphicon glyphicon-pencil"></i></a>
+				<a href="<?php echo base_url('ativo/gerarQRCode/'.$id);?>" class="btn btn-default btn-group" data-toggle="tooltip" data-placement="bottom" title="Gerar QR Code"><i class="glyphicon glyphicon-qrcode"></i></a>
+				<a href="<?php echo base_url('ativo/listarAtivo');?>" class="btn btn-warning btn-group" data-toggle="tooltip" data-placement="bottom" title="Voltar para lista"><i class="glyphicon glyphicon-list-alt"></i></a>
+			</div>
+		</legend>
 		</fieldset>
+		
 	</div>
+	
 </div>
 
-<div class="row">
+<div class="row ativo">
 	<div class="col-md-1">
 		
 	</div>
+	
 	<div class="col-md-4">
 		<label><h4><b>ID</b></h4></label>		
 	</div>
@@ -144,6 +146,21 @@
 		
 	</div>
 	<div class="col-md-4">
+		<label><h4><b>Preço</b></h4></label>		
+	</div>
+
+	<div class="col-md-7">
+		<?php foreach($query->result() as $res){ ?>
+			<h4>R$ <?php echo $res->itm_total; ?></h4>
+		<?php } ?>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-1">
+		
+	</div>
+	<div class="col-md-4">
 		<label><h4><b>Local</b></h4></label>		
 	</div>
 
@@ -198,4 +215,6 @@
 		<?php } ?>
 	</div>
 </div>
+
+
 

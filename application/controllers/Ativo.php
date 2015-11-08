@@ -12,7 +12,7 @@ class Ativo extends CI_Controller {
 	}
 
 	public function index(){
-		$this->listarEmpresas();
+		$this->listarTipo();
 	}
 
 	public function verificarSessao(){
@@ -90,6 +90,15 @@ class Ativo extends CI_Controller {
 			}
 	}
 
+	public function listarTipo(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		$data['query'] = $this->ativo->listarTodosTipos();
+		$this->load->view('ativo/listarTipo_view', $data);
+		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/listarTipo_view');
+	}
+
 	public function listarAtivo(){
 		//verificando a sessao
 		$this->verificarSessao();
@@ -137,6 +146,31 @@ class Ativo extends CI_Controller {
 		$this->verificarSessao();
 
 		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/listarItem_view.php');
+	}
+
+	public function cadastrarTipo(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//validação do formulário
+		$this->form_validation->set_rules('nome', 'NOME', 'required|max_length[50]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 50 caracteres.'));
+
+
+			//verificando se passou pela validacao
+			if($this->form_validation->run() == TRUE){
+
+				$data['tip_status'] = 1;
+				$data['tip_nome'] = $this->input->post('nome');
+				$this->ativo->create($data, 7);
+				$this->session->set_flashdata('ok', 'Cadastrado com sucesso!');
+				redirect('ativo/listarTipo');
+			}else{
+				//exibindo o erro
+				$this->listarTipo();
+			}
+
 	}
 
 
@@ -286,6 +320,7 @@ class Ativo extends CI_Controller {
 					$data['itm_cnpjNTF'] = $this->input->post('cnpj');;
 					$data['itm_idPro'] = $this->input->post('empresa');
 					$data['itm_quantidade'] = $this->input->post('quantidade');
+					$data['itm_total'] = $this->input->post('preco');
 
 					
 						//pesquisar se existe o produto cadastrado na NF
@@ -379,6 +414,23 @@ class Ativo extends CI_Controller {
 
 	}
 
+	public function atualizarTipo($id=NULL){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		$dado = NULL;
+		$dado = $this->ativo->atualizarTipo($id);
+
+			if($dado != NULL){
+				$data['query'] = $dado;
+				$this->load->view('ativo/editarTipo_view.php', $data);
+				$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/editarTipo_view.php');
+			}else{
+				$this->session->set_flashdata('erro', 'Tipo não encontrado');
+				redirect('ativo/listarTipo');
+			}
+	}
+
 	public function atualizarEmpresa($cnpj=NULL){
 		//verificando a sessao
 		$this->verificarSessao();
@@ -447,6 +499,29 @@ class Ativo extends CI_Controller {
 					$this->session->set_flashdata('erro', 'Ativo não encontrado!');
 				}
 
+	}
+
+	public function editarTipo(){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//validação do formulário
+		$this->form_validation->set_rules('nome', 'NOME', 'required|max_length[50]', array(
+										'required' => 'O campo %s é obrigatório.',
+										'max_length' => 'O campo %s excedeu o limite de 50 caracteres.'));
+
+
+			//verificando se passou pela validacao
+			if($this->form_validation->run() == TRUE){
+				$id = $this->input->post('id');
+				$data['tip_nome'] = $this->input->post('nome');
+				$data['tip_status'] = $this->input->post('status');
+				$this->ativo->editarTipo($id, $data);
+				$this->session->set_flashdata('ok', 'Editado com sucesso!');
+				redirect('ativo/listarTipo');
+			}else{
+				$this->listarTipo();
+			}
 	}
 
 	public function editarAtivo(){
