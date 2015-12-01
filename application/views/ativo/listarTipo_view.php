@@ -51,7 +51,7 @@
                 <td><?php echo $res->tip_status==1?'Ativo':'Inativo'; ?></td>
                 <td>
                     <a href="<?php echo base_url('ativo/atualizarTipo/'.$res->tip_id);?>" class="btn btn-info btn-group" data-toggle="tooltip" data-placement="bottom" title="Editar"><i class="glyphicon glyphicon-pencil"></i></a>
-                    <a class="btn btn btn-default btn-group"  onclick="return confirm('Deseja trocar o status do produto?');" data-toggle="tooltip" data-placement="bottom" title="Trocar Status"><i class="glyphicon glyphicon-edit"></i></a>
+                    <a href="<?php echo base_url('ativo/trocarStatusTipo/'.$res->tip_id);?>" class="btn btn btn-default btn-group"  onclick="return confirm('Deseja trocar o status do produto?');" data-toggle="tooltip" data-placement="bottom" title="Trocar Status"><i class="glyphicon glyphicon-edit"></i></a>
                 </td>   
             </tr>
             <?php }?>

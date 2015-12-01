@@ -123,7 +123,7 @@ class Ativo extends CI_Controller {
 		//verificando a sessao
 		$this->verificarSessao();
 
-		$data['tipos'] = $this->ativo->listarTodosTipos();
+		$data['tipos'] = $this->ativo->listarTipo();
 		$data['query'] = $this->ativo->listarTodosProdutos(2);
 		$this->load->view('ativo/listarProdutos_view.php', $data);
 		$this->template->set_partial('lateral', 'partials/lateral-ativo')->set_layout('default')->build('ativo/listarProdutos_view.php');
@@ -842,6 +842,42 @@ class Ativo extends CI_Controller {
 
 	}
 
+	public function trocarStatusTipo($id){
+		//verificando a sessao
+		$this->verificarSessao();
+
+		//iniciando a variavel
+		//verificando qual é o status do produto
+		$dado = NULL;
+		$retorno = $this->ativo->verificarStatus($id, 4);
+			
+			//retirando do array o status do produto
+			foreach($retorno->result() as $res){
+				$dado = $res->tip_status;
+			}
+
+				//verificando se o dado é diferente de nulo, para poder alterar o status do produto
+				if($dado != NULL){
+					if($dado == 1){
+						$data['tip_status'] = 0;
+						$this->ativo->trocarStatus($id, $data, 6);
+						$this->session->set_flashdata('ok', 'Status alterado com sucesso!');
+					}else{
+						if($dado == 0){
+							$data['tip_status'] = 1;
+							$this->ativo->trocarStatus($id, $data, 6);
+							$this->session->set_flashdata('ok', 'Status alterado com sucesso!');
+						}
+					}
+				}else{
+					$this->session->set_flashdata('erro', 'Tipo não encontrado!');
+				}
+
+				redirect('ativo/listarTipo');
+
+
+	}
+
 	public function excluirEmpresa($cnpj){
 		//verificando a sessao
 		$this->verificarSessao();
@@ -951,12 +987,13 @@ class Ativo extends CI_Controller {
 				header('Content-Disposition: attachment; filename= "qrcode.png"');
 				header('Content-Disposition: attachment; filename= "hue.png"');
 
-				$params['data']  = "ID : ".$query[0]->atv_id. "\n";
-				$params['data'] .= "Número de Patrimônio: ".$query[0]->atv_numPatr."\n";
-				$params['data'] .= "Marca: ".$query[0]->pro_marca."\n";
-				$params['data'] .= "Local: ".$query[0]->loc_nome."\n";
+				$params['data']  = "ID : ".$query[0]->atv_id."<br />";
+				$params['data'] .= "Número de Patrimônio: ".$query[0]->atv_numPatr."<br />";
+				$params['data'] .= "Marca: ".$query[0]->pro_marca."<br />";
+				$params['data'] .= "Local: ".$query[0]->loc_nome."<br />";
+				
 
-				$params['size'] = 10;
+				//$params['size'] = 10;
 				$this->ciqrcode->generate($params);
 			}else{
 				$this->session->set_flashdata('erro', 'Ativo não encontrado !');

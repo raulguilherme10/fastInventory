@@ -41,6 +41,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			}
 		}
 
+		public function listarTipo(){
+			$this->db->where('tip_status = 1');
+			$this->db->order_by('tip_nome');
+			return $this->db->get('tbl_tipo');
+		}
+
 		public function listarTodosTipos(){
 			$this->db->order_by('tip_nome');
 			return $this->db->get('tbl_tipo');
@@ -192,6 +198,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					$this->db->update('tbl_fiscalizar', $data);
 					break;
 
+				case 6:
+					$this->db->where('tip_id', $id);
+					$this->db->update('tbl_tipo', $data);
+					break;
 			}
 			
 
@@ -215,6 +225,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 						$this->db->where('ntf_id', $id['id']);
 						$this->db->where('ntf_cnpjEmp', $id['cnpj']);
 						return $this->db->get('tbl_notaFiscal');
+						break;
+
+					case 4:
+						$this->db->where('tip_id', $id);
+						return $this->db->get('tbl_tipo');
 						break;
 				}
 			}

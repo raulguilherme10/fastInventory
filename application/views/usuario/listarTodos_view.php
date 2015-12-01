@@ -36,7 +36,8 @@
 
 
 <div class="row tablist">
-	<table class="table table-hover dt-responsive nowrap" cellspacing="0" id="myTable">
+	<div class="col-xs-12 col-sm-12 col-md-12">
+		<table class="table table-hover dt-responsive nowrap" cellspacing="0" id="myTable">
 		<thead>
 			<td>Usuário</td>
 			<td>Tipo de Conta</td>
@@ -59,6 +60,7 @@
 		</tbody>
 
 	</table>
+	</div>
 </div>
 
 

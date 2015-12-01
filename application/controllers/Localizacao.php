@@ -134,8 +134,8 @@ class Localizacao extends CI_Controller {
 				header("Content-Type: image/png");
 				header('Content-Disposition: attachment; filename= "qrcode.png"');
 
-				$params['data'] = "Nome : ".$sql->loc_nome. "\n";
-				$params['data'] .= "Pavimento: ".$sql->loc_pavimento."\n";
+				$params['data'] = "Nome : ".$sql->loc_nome."<br />";
+				$params['data'] .= "Pavimento: ".$sql->loc_pavimento."<bt />";
 				$params['data'] .= "Status: ".($sql->loc_status==1?'Ativo':'Inativo');
 				$this->ciqrcode->generate($params);
 
